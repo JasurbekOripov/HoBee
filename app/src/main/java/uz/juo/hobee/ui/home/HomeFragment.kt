@@ -102,6 +102,8 @@ class HomeFragment : Fragment() {
 //                .setMessage("Please for using this app grant the permission and mark location")
 //                .setPositiveButton("Ok") { dialog, which ->
 //                    dialog.cancel()
+
+
             if (Functions().checkPermission(requireContext())) {
                 var i = Intent(requireContext(), MapActivity::class.java)
                 startActivity(i)
