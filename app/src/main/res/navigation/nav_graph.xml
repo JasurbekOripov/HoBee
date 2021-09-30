@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/branchFragment"
+        android:name="uz.juo.hobee.ui.branchs.BranchFragment"
+        android:label="fragment_branch"
+        tools:layout="@layout/fragment_branch" />
+    <fragment
+        android:id="@+id/favoriteFragment1"
+        android:name="uz.juo.hobee.ui.favorite.FavoriteFragment"
+        android:label="fragment_favorite"
+        tools:layout="@layout/fragment_favorite" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="uz.juo.hobee.ui.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/infoBranchFragment"
+        android:name="uz.juo.hobee.ui.info_branch.InfoBranchFragment"
+        android:label="fragment_info_branch"
+        tools:layout="@layout/fragment_info_branch" />
+    <fragment
+        android:id="@+id/infoMedicamentFragment"
+        android:name="uz.juo.hobee.ui.info_medicoment.InfoMedicamentFragment"
+        android:label="fragment_info_medicament"
+        tools:layout="@layout/fragment_info_medicament" />
+    <fragment
+        android:id="@+id/infoViewPagerFragment"
+        android:name="uz.juo.hobee.ui.info_viewpager.InfoViewPagerFragment"
+        android:label="fragment_info_view_pager"
+        tools:layout="@layout/fragment_info_view_pager" />
+    <fragment
+        android:id="@+id/searchMedicamentFragment"
+        android:name="uz.juo.hobee.ui.searchMedicaments.SearchMedicamentFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/viewPagerFragment"
+        android:name="uz.juo.hobee.ui.viewpager.ViewPagerFragment"
+        android:label="fragment_view_pager"
+        tools:layout="@layout/fragment_view_pager" />
+    <activity
+        android:id="@+id/mapActivity"
+        android:name="uz.juo.hobee.ui.location.MapActivity"
+        android:label="activity_map"
+        tools:layout="@layout/activity_map" />
+    <activity
+        android:id="@+id/pharmacyMapActivity"
+        android:name="uz.juo.hobee.ui.location.PharmacyMapActivity"
+        android:label="activity_pharmacy_map"
+        tools:layout="@layout/activity_pharmacy_map" />
+    <activity
+        android:id="@+id/splashActivity"
+        android:name="uz.juo.hobee.ui.splash.SplashActivity"
+        android:label="activity_splash"
+        tools:layout="@layout/activity_splash" />
+</navigation>
