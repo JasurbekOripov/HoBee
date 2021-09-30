@@ -103,7 +103,6 @@ class HomeFragment : Fragment() {
 //                .setPositiveButton("Ok") { dialog, which ->
 //                    dialog.cancel()
 
-
             if (Functions().checkPermission(requireContext())) {
                 var i = Intent(requireContext(), MapActivity::class.java)
                 startActivity(i)
