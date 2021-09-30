@@ -1,5 +1,6 @@
 package uz.juo.hobee
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -83,12 +84,18 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onBackPressed() {
         super.onBackPressed()
+
 //        if (navController.currentDestination?.id == R.id.homeFragment||navController.currentDestination?.id == R.id.homeFragment)
-//        if (navController.currentDestination?.id == R.id.homeFragment) {
-//            binding.bottomNavBar.itemActiveIndex = 0
-//        }
+        if (navController.currentDestination?.id == R.id.homeFragment) {
+            binding.bottomNavBar.itemActiveIndex = 0
+            navController.popBackStack()
+//            if (navController.backStack.last.destination.id == navController.currentDestination?.id ) {
+//                finish()
+//            }
+        }
     }
 
 }

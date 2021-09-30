@@ -81,7 +81,7 @@ class BranchFragment : Fragment() {
             override fun itemClicked(branch: Item, position: Int) {
 //                SharedPreference.getInstance(requireContext()).branchId = branch.id.toString()
                 var bundle = Bundle()
-                bundle.putSerializable("param1", branch)
+                bundle.putString("param1", branch.id.toString())
                 findNavController().navigate(R.id.infoBranchFragment, bundle)
             }
         })

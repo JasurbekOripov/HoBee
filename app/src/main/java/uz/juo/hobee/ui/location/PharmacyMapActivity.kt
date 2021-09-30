@@ -29,18 +29,28 @@ import uz.juo.hobee.R
 import uz.juo.hobee.utils.SharedPreference
 
 class PharmacyMapActivity : AppCompatActivity() {
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var mapView: MapView? = null
     lateinit var userLocationLayer: UserLocationLayer
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-
+    var lat = 0.0
+    var long = 0.0
+    private val TARGET_LOCATION = Point(59.945933, 30.320045)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var mapkit = MapKitFactory.getInstance()
-        setContentView(R.layout.activity_pharmacy_map)
+        MapKitFactory.initialize(this)
+        val mapkit = MapKitFactory.getInstance()
+        setContentView(R.layout.activity_map)
         mapView = findViewById<View>(R.id.map) as MapView
         userLocationLayer = mapkit.createUserLocationLayer(mapView?.mapWindow!!)
         userLocationLayer.isHeadingEnabled = true;
+
+        var bundle=Bundle()
+        lat=bundle.getDouble("lat", 0.0)
+        long=bundle.getDouble("long", 0.0)
         showUserLocation()
+        mapView!!.map.move(CameraPosition(TARGET_LOCATION, 14.0f,
+            0.0f, 0.0f), Animation(Animation.Type.SMOOTH, 5F),
+            null)
     }
 
     private fun showUserLocation() {
@@ -62,7 +72,6 @@ class PharmacyMapActivity : AppCompatActivity() {
             return
         }
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-
             if (location != null && location.latitude > 0 && (location.longitude) > 0) {
                 cameraMoveOn(location.latitude, location.longitude)
             } else {
@@ -99,6 +108,7 @@ class PharmacyMapActivity : AppCompatActivity() {
         MapKitFactory.getInstance().onStart()
         mapView!!.onStart()
     }
+
     private fun showLocationPrompt() {
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -146,5 +156,4 @@ class PharmacyMapActivity : AppCompatActivity() {
             }
         }
     }
-
 }

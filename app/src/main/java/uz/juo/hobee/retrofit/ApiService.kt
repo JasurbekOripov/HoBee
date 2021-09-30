@@ -14,6 +14,9 @@ interface ApiService {
     @GET("medicaments/{id}")
     suspend fun getMedicamentById(@Path("id") id: Int): GetById
 
+    @GET("branches/{id}")
+    suspend fun getPharmacyById(@Path("id") id: Int): Item
+
     @POST("medicaments")
     suspend fun getMedicationByIdArray(@Query("list") list: ArrayList<Int>): Medicament
 

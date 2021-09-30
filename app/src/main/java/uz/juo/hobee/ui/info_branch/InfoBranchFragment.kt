@@ -22,8 +22,12 @@ import uz.juo.hobee.adapters.BranchInfoAdapter
 import uz.juo.hobee.databinding.FragmentInfoBranchBinding
 import uz.juo.hobee.models.Item
 import uz.juo.hobee.models.ItemX
+import uz.juo.hobee.retrofit.ApiClient
+import uz.juo.hobee.retrofit.ApiService
 import uz.juo.hobee.room.AppDataBase
 import uz.juo.hobee.room.entity.FavoritesEntity
+import uz.juo.hobee.ui.location.MapActivity
+import uz.juo.hobee.ui.location.PharmacyMapActivity
 import uz.juo.hobee.utils.SharedPreference
 import uz.juo.hobee.viewmodel.get_medicaments_pharmacy.MedicamentsPharmacyModelFactory
 import uz.juo.hobee.viewmodel.get_medicaments_pharmacy.MedicamentsPharmacyViewModel
@@ -33,8 +37,9 @@ private const val ARG_PARAM2 = "param2"
 
 class InfoBranchFragment : Fragment() {
     lateinit var binding: FragmentInfoBranchBinding
+
     var name = ""
-    private var param1: Item? = null
+    private var param1: String? = null
     private var param2: String? = null
     lateinit var viewModel: MedicamentsPharmacyViewModel
     lateinit var adapter: BranchInfoAdapter
@@ -42,7 +47,7 @@ class InfoBranchFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getSerializable(ARG_PARAM1) as Item
+            param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
         (activity as MainActivity).hideBottomBar()
@@ -54,20 +59,42 @@ class InfoBranchFragment : Fragment() {
     ): View {
         binding = FragmentInfoBranchBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[MedicamentsPharmacyViewModel::class.java]
+        lifecycleScope.launch {
+            var branch = ApiClient.apiService.getPharmacyById(param1?.toInt()!!)
+            binding.map.setOnClickListener {
+                var bundle = Bundle()
+                bundle.putDouble("lat", branch.latitude)
+                bundle.putDouble("long", branch.longitude)
+                var i = Intent(requireContext(), PharmacyMapActivity::class.java)
+                startActivity(i)
+            }
+            binding.phone.setOnClickListener {
+                val intent = Intent(Intent.ACTION_DIAL)
+                intent.data = Uri.parse("tel:" + branch.phone)
+                startActivity(intent)
+            }
+            binding.name.text = branch.name
+
+        }
         loadData()
         binding.back.setOnClickListener {
             findNavController().popBackStack()
         }
-        binding.map.setOnClickListener {
-            Toast.makeText(requireContext(), param1?.longitude.toString(), Toast.LENGTH_SHORT)
-                .show()
-        }
-        binding.phone.setOnClickListener {
-            val intent = Intent(Intent.ACTION_DIAL)
-            intent.data = Uri.parse("tel:" + param1?.phone)
-            startActivity(intent)
-        }
-        binding.name.text = param1?.name
+        binding.search.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {
+                name = p0.toString()
+                viewModel.medicaments(requireContext(), name, param1!!.toInt())
+                    .observe(viewLifecycleOwner, Observer {
+                        lifecycleScope.launch {
+                            adapter.submitData(it)
+                        }
+                    })
+            }
+        })
+
+
         adapter = BranchInfoAdapter(requireContext(), object : BranchInfoAdapter.setOnClick {
             override fun itemClick(mediacament: ItemX, position: Int) {
                 var bundle = Bundle()
@@ -96,26 +123,11 @@ class InfoBranchFragment : Fragment() {
             }
         })
         binding.rv.adapter = adapter
-        binding.search.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun afterTextChanged(p0: Editable?) {
-                name = p0.toString()
-                param1?.id?.let {
-                    viewModel.medicaments(requireContext(), name, it)
-                        .observe(viewLifecycleOwner, Observer {
-                            lifecycleScope.launch {
-                                adapter.submitData(it)
-                            }
-                        })
-                }
-            }
-        })
         return binding.root
     }
 
     private fun loadData() {
-        viewModel.medicaments(requireContext(), "", param1?.id!!).observe(viewLifecycleOwner, {
+        viewModel.medicaments(requireContext(), "", param1?.toInt()!!).observe(viewLifecycleOwner, {
             lifecycleScope.launch {
                 adapter.submitData(it)
             }

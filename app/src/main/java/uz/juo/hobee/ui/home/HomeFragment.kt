@@ -66,6 +66,7 @@ class HomeFragment : Fragment() {
         val progressBar = binding.spinKit as ProgressBar
         val doubleBounce: Sprite = FadingCircle()
         progressBar.indeterminateDrawable = doubleBounce
+        Functions().checkPermission(requireContext())
         binding.card.setOnClickListener {
             findNavController().navigate(R.id.searchMedicamentFragment)
         }
@@ -135,7 +136,7 @@ class HomeFragment : Fragment() {
         } else {
             try {
                 lifecycleScope.launch {
-                    getNeariestPharmacy()
+//                    getNeariestPharmacy()
                     var l = SharedPreference.getInstance(requireContext()).location
                     var name = Functions().getLocationName(
                         requireContext(),
@@ -152,34 +153,40 @@ class HomeFragment : Fragment() {
     }
 
     private suspend fun getBestMed() {
-        val list = ApiClient.apiService.getBestMedicaments() as ArrayList<Medicament>
-        bestAdapter = HomeMediacamentAdapter(requireContext(), list,
-            object : HomeMediacamentAdapter.itemOnCLick {
-                override fun itemClick(mediacament: Medicament, position: Int) {
-                    SharedPreference.getInstance(requireContext()).lang = mediacament.id.toString()
-                    findNavController().navigate(R.id.infoMedicamentFragment)
-                }
-
-                override fun itemLikeClick(mediacament: Medicament, position: Int, state: Boolean) {
-                    if (!state) {
-                        AppDataBase.getInstance(requireContext()).dao()
-                            .add(
-                                FavoritesEntity(
-                                    mediacament.id,
-                                    mediacament.name,
-                                    mediacament.manufacturer,
-                                    mediacament.country,
-                                    mediacament.category,
-                                    mediacament.price
-                                )
-                            )
-                    } else {
-                        AppDataBase.getInstance(requireContext()).dao()
-                            .delete(mediacament.id)
+        try {
+            val list = ApiClient.apiService.getBestMedicaments() as ArrayList<Medicament>
+            bestAdapter = HomeMediacamentAdapter(requireContext(), list,
+                object : HomeMediacamentAdapter.itemOnCLick {
+                    override fun itemClick(mediacament: Medicament, position: Int) {
+                        SharedPreference.getInstance(requireContext()).lang = mediacament.id.toString()
+                        findNavController().navigate(R.id.infoMedicamentFragment)
                     }
-                }
-            })
-        binding.medicamentRv.adapter = bestAdapter
+
+                    override fun itemLikeClick(mediacament: Medicament, position: Int, state: Boolean) {
+                        if (!state) {
+                            AppDataBase.getInstance(requireContext()).dao()
+                                .add(
+                                    FavoritesEntity(
+                                        mediacament.id,
+                                        mediacament.name,
+                                        mediacament.manufacturer,
+                                        mediacament.country,
+                                        mediacament.category,
+                                        mediacament.price
+                                    )
+                                )
+                        } else {
+                            AppDataBase.getInstance(requireContext()).dao()
+                                .delete(mediacament.id)
+                        }
+                    }
+                })
+            binding.medicamentRv.adapter = bestAdapter
+        }
+        catch (e:Exception){
+            Toast.makeText(requireContext(), "Server Error", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     private suspend fun getNeariestPharmacy() {

@@ -44,6 +44,7 @@ private const val ARG_PARAM2 = "position"
 
 class InfoViewPagerFragment : Fragment() {
     lateinit var binding: FragmentInfoViewPagerBinding
+
     //    private var param1: Int? = null
     private var position: String? = "0"
     var pos = 1
@@ -88,35 +89,9 @@ class InfoViewPagerFragment : Fragment() {
                 }
 
                 override fun itemPhoneClicked(branch: ItemMedIdPrice, position: Int) {
-                    Dexter.withContext(requireContext())
-                        .withPermission(Manifest.permission.CALL_PHONE)
-                        .withListener(object : PermissionListener {
-                            override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                                val intent = Intent(Intent.ACTION_DIAL)
-                                intent.data = Uri.parse("tel:" + branch.phone)
-                                startActivity(intent)
-                            }
-
-                            override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "You did not grant the permission please manually grand it!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                val uri = Uri.fromParts("package", activity?.packageName, null)
-                                intent.data = uri
-                                startActivity(intent)
-//                                }
-                            }
-
-                            override fun onPermissionRationaleShouldBeShown(
-                                permission: PermissionRequest?,
-                                token: PermissionToken?
-                            ) {
-                                token?.continuePermissionRequest()
-                            }
-                        }).check()
+                    val intent = Intent(Intent.ACTION_DIAL)
+                    intent.data = Uri.parse("tel:" + branch.phone)
+                    startActivity(intent)
                 }
 
                 override fun itemMapClicked(branch: ItemMedIdPrice, position: Int) {
@@ -131,10 +106,10 @@ class InfoViewPagerFragment : Fragment() {
                         }
                     })
                 binding.rv.adapter = adapter
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
             }
-           
+
         } else {
             view?.let {
                 Snackbar.make(it, "No Internet connection", Snackbar.LENGTH_LONG)
