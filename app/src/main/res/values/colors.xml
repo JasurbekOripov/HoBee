@@ -10,6 +10,8 @@
     <color name="main_blue">#1B6DDC</color>
     <color name="main_blue2">#1961CD</color>
     <color name="hobee_grey">#CBD0C5</color>
+    <color name="hobee_grey3">#959595</color>
+    <color name="hobee_grey4">#4C4C4C</color>
     <color name="hobee_grey2">#F3F3F3</color>
     <color name="hobee_green">#2FD613</color>
 </resources>

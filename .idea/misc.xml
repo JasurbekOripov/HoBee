@@ -8,14 +8,18 @@
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/activity_map.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/activity_pharmacy_map.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/activity_splash.xml" value="0.17255434782608695" />
+        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/best_mdeicaments_item.xml" value="0.3787610619469027" />
+        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/branch_rv_item.xml" value="0.67" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/fragment_branch.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/fragment_favorite.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/fragment_home.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/fragment_info_branch.xml" value="0.23000987166831194" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/fragment_info_medicament.xml" value="0.18" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/fragment_info_view_pager.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/fragment_search.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/fragment_view_pager.xml" value="0.20416666666666666" />
-        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/info_medicament_item.xml" value="0.19814814814814816" />
+        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/home_nearby_rv_item.xml" value="0.5" />
+        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/info_medicament_item.xml" value="0.22" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/view_pager_item.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/menu/bottom_nav.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1125" />

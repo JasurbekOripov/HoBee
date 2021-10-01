@@ -12,8 +12,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="@color/white"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:padding="@dimen/_7sdp">
 
         <TextView
@@ -60,6 +60,7 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:maxLines="1"
             android:text="Full day"
+            android:textColor="@color/black"
             android:textSize="@dimen/_9sdp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/location" />
@@ -71,6 +72,7 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:maxLines="1"
             android:text="Full day"
+            android:textColor="@color/black"
             android:textSize="@dimen/_9sdp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/location" />

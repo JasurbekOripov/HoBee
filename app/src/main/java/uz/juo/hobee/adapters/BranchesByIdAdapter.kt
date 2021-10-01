@@ -16,8 +16,13 @@ class BranchesByIdAdapter(var itemClick: setOnClick) :
         RecyclerView.ViewHolder(item.root) {
         fun onBind(branch: ItemMedIdPrice, position: Int) {
             item.branchName.text = branch.name
-            if (branch.distance != null) {
-                item.distance.text = "Нету"
+            if (branch.price == null || branch.price == "") {
+                item.price.text = "нет в наличии"
+            } else {
+                item.price.text = (branch.price)
+            }
+            if (branch.distance == null) {
+                item.distance.text = "Нет"
             } else {
                 item.distance.text = Functions().kmConvertor(branch.distance)
             }

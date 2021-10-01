@@ -25,16 +25,16 @@ class BrancheByMedicamentSource(
                 data = ApiClient.apiService.getPharmacyByMedicamentMap(
                     limit = 20,
                     page = pageNumber,
-                    lat = lat,
-                    long = long,
+                    lat = long,
+                    long = lat,
                     id = id
                 )
             } else {
                 data = ApiClient.apiService.getPharmacyByMedicamentPrice(
                     limit = 20,
                     page = pageNumber,
-                    lat = lat,
-                    long = long,
+                    lat = long,
+                    long = lat,
                     id = id
                 )
             }

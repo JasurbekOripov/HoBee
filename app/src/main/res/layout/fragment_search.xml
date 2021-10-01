@@ -5,10 +5,10 @@
     android:id="@+id/refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#40CBD0C5"
     tools:context=".ui.searchMedicaments.SearchMedicamentFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@color/hobee_grey2"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
