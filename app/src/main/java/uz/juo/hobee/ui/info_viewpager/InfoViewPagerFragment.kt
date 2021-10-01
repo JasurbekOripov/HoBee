@@ -57,7 +57,7 @@ class InfoViewPagerFragment : Fragment() {
 //            param1 = it.getInt(ARG_PARAM1)
             position = it.getString(ARG_PARAM2)
         }
-        (activity as MainActivity).hideBottomBar()
+//        (activity as MainActivity).hideBottomBar()
     }
 
     override fun onCreateView(
@@ -135,7 +135,7 @@ class InfoViewPagerFragment : Fragment() {
         super.onResume()
         pos = SharedPreference.getInstance(requireContext()).lang.toInt()
         loadData()
-        (activity as MainActivity).hideBottomBar()
+//        (activity as MainActivity).hideBottomBar()
     }
 
     override fun onDestroy() {

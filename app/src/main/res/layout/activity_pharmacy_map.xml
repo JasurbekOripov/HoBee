@@ -7,11 +7,11 @@
     tools:context=".ui.location.PharmacyMapActivity">
 
     <com.yandex.mapkit.mapview.MapView
-        android:id="@+id/map"
+        android:id="@+id/mapPharmacy"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <ImageView
-        android:id="@+id/getCurrentLocation"
+        android:id="@+id/getCurrentLocationPharmacy"
         android:layout_width="@dimen/_35sdp"
         android:layout_height="@dimen/_35sdp"
         android:background="@drawable/map_back_back"

@@ -66,6 +66,15 @@ public class SharedPreference {
     public boolean getHaslang() {
         return prefs.getBoolean("hasLang", false);
     }
+    public void setHasApikeyMap(boolean hasLang) {
+        editor = prefs.edit();
+        editor.putBoolean("keymap", hasLang);
+        editor.apply();
+    }
+
+    public boolean getHasApikeyMap() {
+        return prefs.getBoolean("keymap", false);
+    }
 
     public void setBranchId(String id) {
         editor = prefs.edit();

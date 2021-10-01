@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.yandex.mapkit.MapKitFactory
 import uz.juo.hobee.databinding.ActivityMainBinding
+import uz.juo.hobee.utils.SharedPreference
 
 class MainActivity : AppCompatActivity() {
     lateinit var navController: NavController
@@ -21,7 +22,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         try {
-            MapKitFactory.setApiKey("126b6936-92d1-4ebe-88f6-4615dcf93ff6")
+//            if (!SharedPreference.getInstance(this).hasApikeyMap) {
+//                SharedPreference.getInstance(this).hasApikeyMap = true
+//            }
         } catch (e: Exception) {
             Toast.makeText(this, "Please restart app", Toast.LENGTH_SHORT).show()
         }
@@ -84,13 +87,20 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        MapKitFactory.getInstance().onStop()
+    }
     @SuppressLint("RestrictedApi")
     override fun onBackPressed() {
         super.onBackPressed()
+//        if (navController.previousBackStackEntry?.destination?.id == R.id.homeFragment) {
+//            finish()
+//        } else
         if (navController.currentDestination?.id == R.id.homeFragment) {
             binding.bottomNavBar.itemActiveIndex = 0
-            navController.popBackStack()
         }
+
     }
 
 }

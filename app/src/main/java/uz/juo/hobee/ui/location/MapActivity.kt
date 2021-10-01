@@ -30,6 +30,7 @@ import java.util.*
 import com.yandex.mapkit.location.LocationStatus
 
 import com.yandex.mapkit.location.LocationListener
+import uz.juo.hobee.MainActivity
 import uz.juo.hobee.R
 import uz.juo.hobee.utils.SharedPreference
 
@@ -97,8 +98,11 @@ class MapActivity : AppCompatActivity() {
                     Log.d(TAG, "getUserLocation121212:  $location")
                     if (location != null && location.latitude > 0 && (location.longitude) > 0) {
                         SharedPreference.getInstance(this)
-                            .setLocation(location.latitude.toString(), location.longitude.toString())
-                        SharedPreference.getInstance(this).hasLocation=(true)
+                            .setLocation(
+                                location.latitude.toString(),
+                                location.longitude.toString()
+                            )
+                        SharedPreference.getInstance(this).hasLocation = true
                         cameraMoveOn(location.latitude, location.longitude)
                     } else {
                         Log.d(TAG, "getUserLocatio:  null or min then 0")
@@ -131,9 +135,10 @@ class MapActivity : AppCompatActivity() {
     private fun setDefoultLocation() {
         Log.d(TAG, "getUserLocation121212:  default location get")
         SharedPreference.getInstance(this).setLocation("${41.311081}", "${69.240562}")
-        SharedPreference.getInstance(this).hasLocation=(true)
+        SharedPreference.getInstance(this).hasLocation = (true)
         cameraMoveOn(41.311081, 69.240562)
     }
+
 
     fun cameraMoveOn(lat: Double, long: Double) {
         mapView!!.map.move(

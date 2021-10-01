@@ -54,8 +54,8 @@ class HomeFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        helper = NetworkHelper((requireContext()))
 
+        helper = NetworkHelper((requireContext()))
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -97,13 +97,17 @@ class HomeFragment : Fragment() {
         binding.dataConstraid.visibility = View.VISIBLE
     }
 
+    override fun onStart() {
+        super.onStart()
+        checkLocation()
+    }
     private fun checkLocation() {
         if (!SharedPreference.getInstance(requireContext()).hasLocation) {
             val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
             builder.setTitle("Location Permission")
                 .setMessage("Please for using this app grant the permission and mark location")
                 .setPositiveButton("Ok") { dialog, which ->
-                    dialog.cancel()
+//                    dialog.cancel()
 //            if (Functions().checkPermission(requireContext())) {
                 var i = Intent(requireContext(), MapActivity::class.java)
                 startActivity(i)
@@ -194,11 +198,10 @@ class HomeFragment : Fragment() {
     }
 
     private suspend fun getNeariestPharmacy() {
-        val long = SharedPreference.getInstance(requireContext()).location.lat
-        val lat = SharedPreference.getInstance(requireContext()).location.long
         try {
+            val long = SharedPreference.getInstance(requireContext()).location.lat
+            val lat = SharedPreference.getInstance(requireContext()).location.long
             val list = ApiClient.apiService.getNeariestPharmacy(lat, long) as ArrayList<NeariestPharmcy>
-
             nearByBranchAdapter = HomeBranchAdapter(list, object : HomeBranchAdapter.itemOnCLick {
                 override fun itemClick(id: Int) {
                     val bundle = Bundle()
@@ -239,13 +242,13 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         checkInternet()
+        (activity as MainActivity).showBottomBar()
     }
 
     private fun checkInternet() {
         if (helper.isNetworkConnected()) {
             lifecycleScope.launch {
                 getBestMed()
-                checkLocation()
             }
             show()
         } else {

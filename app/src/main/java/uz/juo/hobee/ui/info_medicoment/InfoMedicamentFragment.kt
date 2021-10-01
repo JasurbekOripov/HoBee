@@ -189,7 +189,7 @@ class InfoMedicamentFragment : Fragment() {
         super.onResume()
         pos = SharedPreference.getInstance(requireContext()).lang.toInt()
         setData()
-        (activity as MainActivity).hideBottomBar()
+//        (activity as MainActivity).hideBottomBar()
     }
 
     override fun onDestroy() {

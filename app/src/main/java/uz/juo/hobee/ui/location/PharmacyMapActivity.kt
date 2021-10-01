@@ -8,11 +8,14 @@ import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.api.ApiException
@@ -39,18 +42,27 @@ class PharmacyMapActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         MapKitFactory.initialize(this)
         val mapkit = MapKitFactory.getInstance()
-        setContentView(R.layout.activity_map)
-        mapView = findViewById<View>(R.id.map) as MapView
+        setContentView(R.layout.activity_pharmacy_map)
+        mapView = findViewById<View>(R.id.mapPharmacy) as MapView
         userLocationLayer = mapkit.createUserLocationLayer(mapView?.mapWindow!!)
         userLocationLayer.isHeadingEnabled = true;
-
-        var bundle=Bundle()
-        lat=bundle.getDouble("lat", 0.0)
-        long=bundle.getDouble("long", 0.0)
-        showUserLocation()
-        mapView!!.map.move(CameraPosition(TARGET_LOCATION, 14.0f,
-            0.0f, 0.0f), Animation(Animation.Type.SMOOTH, 5F),
-            null)
+        var bundle = Bundle()
+        lat = bundle.getDouble("lat", 0.0)
+        long = bundle.getDouble("long", 0.0)
+        val getCurrent_btn = findViewById<ImageView>(R.id.getCurrentLocationPharmacy)
+        getCurrent_btn.setOnClickListener {
+            showUserLocation()
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mapView!!.map.mapObjects.addPlacemark(TARGET_LOCATION)
+        }
+        mapView!!.map.move(
+            CameraPosition(
+                TARGET_LOCATION, 14.0f,
+                0.0f, 0.0f
+            ), Animation(Animation.Type.SMOOTH, 5F),
+            null
+        )
     }
 
     private fun showUserLocation() {
@@ -84,7 +96,7 @@ class PharmacyMapActivity : AppCompatActivity() {
     private fun setDefoultLocation() {
         Log.d(ContentValues.TAG, "getUserLocation121212:  default location get")
         SharedPreference.getInstance(this).setLocation("${41.311081}", "${69.240562}")
-        SharedPreference.getInstance(this).hasLocation=(true)
+        SharedPreference.getInstance(this).hasLocation = (true)
         cameraMoveOn(41.311081, 69.240562)
     }
 
@@ -114,7 +126,8 @@ class PharmacyMapActivity : AppCompatActivity() {
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
 
-        val result: Task<LocationSettingsResponse> = LocationServices.getSettingsClient(this).checkLocationSettings(builder.build())
+        val result: Task<LocationSettingsResponse> =
+            LocationServices.getSettingsClient(this).checkLocationSettings(builder.build())
 
         result.addOnCompleteListener { task ->
             try {
@@ -126,7 +139,8 @@ class PharmacyMapActivity : AppCompatActivity() {
                 when (exception.statusCode) {
                     LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
                         try {
-                            val resolvable: ResolvableApiException = exception as ResolvableApiException
+                            val resolvable: ResolvableApiException =
+                                exception as ResolvableApiException
                             resolvable.startResolutionForResult(
                                 this, LocationRequest.PRIORITY_HIGH_ACCURACY
                             )
