@@ -31,6 +31,7 @@ import uz.juo.hobee.ui.location.PharmacyMapActivity
 import uz.juo.hobee.utils.SharedPreference
 import uz.juo.hobee.viewmodel.get_medicaments_pharmacy.MedicamentsPharmacyModelFactory
 import uz.juo.hobee.viewmodel.get_medicaments_pharmacy.MedicamentsPharmacyViewModel
+import java.lang.Exception
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -60,19 +61,23 @@ class InfoBranchFragment : Fragment() {
         binding = FragmentInfoBranchBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[MedicamentsPharmacyViewModel::class.java]
         lifecycleScope.launch {
-            var branch = ApiClient.apiService.getPharmacyById(param1?.toInt()!!)
-            binding.map.setOnClickListener {
-                var i = Intent(requireContext(), PharmacyMapActivity::class.java)
-                i.putExtra("lat", branch.latitude)
-                i.putExtra("long", branch.longitude)
-                startActivity(i)
+            try {
+                var branch = ApiClient.apiService.getPharmacyById(param1?.toInt()!!)
+                binding.map.setOnClickListener {
+                    var i = Intent(requireContext(), PharmacyMapActivity::class.java)
+                    i.putExtra("lat", branch.latitude)
+                    i.putExtra("long", branch.longitude)
+                    startActivity(i)
+                }
+                binding.phone.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_DIAL)
+                    intent.data = Uri.parse("tel:" + branch.phone)
+                    startActivity(intent)
+                }
+                binding.name.text = branch.name
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), e.message.toString(), Toast.LENGTH_SHORT).show()
             }
-            binding.phone.setOnClickListener {
-                val intent = Intent(Intent.ACTION_DIAL)
-                intent.data = Uri.parse("tel:" + branch.phone)
-                startActivity(intent)
-            }
-            binding.name.text = branch.name
 
         }
         loadData()
@@ -126,7 +131,12 @@ class InfoBranchFragment : Fragment() {
     private fun loadData() {
         viewModel.medicaments(requireContext(), "", param1?.toInt()!!).observe(viewLifecycleOwner, {
             lifecycleScope.launch {
-                adapter.submitData(it)
+                try {
+                    adapter.submitData(it)
+                }catch (e:Exception){
+                    Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                }
+
             }
         })
     }
@@ -146,6 +156,7 @@ class InfoBranchFragment : Fragment() {
                 }
             }
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

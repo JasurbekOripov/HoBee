@@ -151,7 +151,6 @@ class BranchFragment : Fragment() {
         binding.searchLinear.visibility = View.VISIBLE
     }
 
-
     fun showLoading() {
         binding.spinKit.visibility = View.VISIBLE
 //        internetConnected = false
