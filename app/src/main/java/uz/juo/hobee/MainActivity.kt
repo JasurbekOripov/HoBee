@@ -87,14 +87,9 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("RestrictedApi")
     override fun onBackPressed() {
         super.onBackPressed()
-
-//        if (navController.currentDestination?.id == R.id.homeFragment||navController.currentDestination?.id == R.id.homeFragment)
         if (navController.currentDestination?.id == R.id.homeFragment) {
             binding.bottomNavBar.itemActiveIndex = 0
             navController.popBackStack()
-//            if (navController.backStack.last.destination.id == navController.currentDestination?.id ) {
-//                finish()
-//            }
         }
     }
 

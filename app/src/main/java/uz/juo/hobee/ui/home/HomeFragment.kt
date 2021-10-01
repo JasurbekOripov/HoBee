@@ -18,6 +18,7 @@ import com.github.ybq.android.spinkit.sprite.Sprite
 import com.github.ybq.android.spinkit.style.FadingCircle
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
+import uz.juo.hobee.MainActivity
 import uz.juo.hobee.R
 import uz.juo.hobee.adapters.HomeBranchAdapter
 import uz.juo.hobee.adapters.HomeMediacamentAdapter
@@ -54,6 +55,7 @@ class HomeFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
         helper = NetworkHelper((requireContext()))
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -66,7 +68,6 @@ class HomeFragment : Fragment() {
         val progressBar = binding.spinKit as ProgressBar
         val doubleBounce: Sprite = FadingCircle()
         progressBar.indeterminateDrawable = doubleBounce
-        Functions().checkPermission(requireContext())
         binding.card.setOnClickListener {
             findNavController().navigate(R.id.searchMedicamentFragment)
         }
@@ -97,46 +98,45 @@ class HomeFragment : Fragment() {
     }
 
     private fun checkLocation() {
-        if (!SharedPreference.getInstance(requireContext()).haslang) {
-//            val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
-//            builder.setTitle("Location Permission")
-//                .setMessage("Please for using this app grant the permission and mark location")
-//                .setPositiveButton("Ok") { dialog, which ->
-//                    dialog.cancel()
-
-            if (Functions().checkPermission(requireContext())) {
+        if (!SharedPreference.getInstance(requireContext()).hasLocation) {
+            val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            builder.setTitle("Location Permission")
+                .setMessage("Please for using this app grant the permission and mark location")
+                .setPositiveButton("Ok") { dialog, which ->
+                    dialog.cancel()
+//            if (Functions().checkPermission(requireContext())) {
                 var i = Intent(requireContext(), MapActivity::class.java)
                 startActivity(i)
-            } else {
-                SharedPreference.getInstance(requireContext()).setHasLang(true)
-                SharedPreference.getInstance(requireContext())
-                    .setLocation("${41.311081}", "${69.240562}")
-                try {
-                    var name = Functions().getLocationName(
-                        requireContext(),
-                        41.311081,
-                        69.240562,
-                    )
-                    binding.adress.text = name
-                } catch (e: Exception) {
-                    Toast.makeText(requireContext(), "Wrong location", Toast.LENGTH_SHORT)
-                        .show()
+//            } else {
+
+//            }
+                    dialog.cancel()
                 }
-            }
+                .setNegativeButton("No") { a, i ->
+                    a.cancel()
+                    SharedPreference.getInstance(requireContext()).hasLocation=true
+                    SharedPreference.getInstance(requireContext())
+                        .setLocation("${41.311081}", "${69.240562}")
+                    try {
+                        var name = Functions().getLocationName(
+                            requireContext(),
+                            41.311081,
+                            69.240562,
+                        )
+                        binding.adress.text = name
+                    } catch (e: Exception) {
+                        Toast.makeText(requireContext(), "Wrong location", Toast.LENGTH_SHORT)
+                            .show()
+                    }
 
-//                    dialog.cancel()
-//                }.setNegativeButton("No") { a, i ->
-//                    a.cancel()
-
-
-//                }
-//                .setCancelable(false)
-//            builder.show()
+                }
+                .setCancelable(false)
+            builder.show()
 
         } else {
             try {
                 lifecycleScope.launch {
-//                    getNeariestPharmacy()
+                    getNeariestPharmacy()
                     var l = SharedPreference.getInstance(requireContext()).location
                     var name = Functions().getLocationName(
                         requireContext(),
@@ -158,11 +158,16 @@ class HomeFragment : Fragment() {
             bestAdapter = HomeMediacamentAdapter(requireContext(), list,
                 object : HomeMediacamentAdapter.itemOnCLick {
                     override fun itemClick(mediacament: Medicament, position: Int) {
-                        SharedPreference.getInstance(requireContext()).lang = mediacament.id.toString()
+                        SharedPreference.getInstance(requireContext()).lang =
+                            mediacament.id.toString()
                         findNavController().navigate(R.id.infoMedicamentFragment)
                     }
 
-                    override fun itemLikeClick(mediacament: Medicament, position: Int, state: Boolean) {
+                    override fun itemLikeClick(
+                        mediacament: Medicament,
+                        position: Int,
+                        state: Boolean
+                    ) {
                         if (!state) {
                             AppDataBase.getInstance(requireContext()).dao()
                                 .add(
@@ -182,8 +187,7 @@ class HomeFragment : Fragment() {
                     }
                 })
             binding.medicamentRv.adapter = bestAdapter
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             Toast.makeText(requireContext(), "Server Error", Toast.LENGTH_SHORT).show()
         }
 
@@ -192,16 +196,21 @@ class HomeFragment : Fragment() {
     private suspend fun getNeariestPharmacy() {
         val long = SharedPreference.getInstance(requireContext()).location.lat
         val lat = SharedPreference.getInstance(requireContext()).location.long
-        val list = ApiClient.apiService.getNeariestPharmacy(lat, long) as ArrayList<NeariestPharmcy>
-        nearByBranchAdapter = HomeBranchAdapter(list, object : HomeBranchAdapter.itemOnCLick {
-            override fun itemClick(id: Int) {
-                val bundle = Bundle()
-                bundle.putString("param1", id.toString())
-                findNavController().navigate(R.id.infoBranchFragment, bundle)
-            }
-        })
-        binding.pharmcyRv.adapter = nearByBranchAdapter
+        try {
+            val list = ApiClient.apiService.getNeariestPharmacy(lat, long) as ArrayList<NeariestPharmcy>
 
+            nearByBranchAdapter = HomeBranchAdapter(list, object : HomeBranchAdapter.itemOnCLick {
+                override fun itemClick(id: Int) {
+                    val bundle = Bundle()
+                    bundle.putString("param1", id.toString())
+                    findNavController().navigate(R.id.infoBranchFragment, bundle)
+                }
+            })
+            binding.pharmcyRv.adapter = nearByBranchAdapter
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Get nearest pharmacy error", Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -243,7 +252,6 @@ class HomeFragment : Fragment() {
             hide()
         }
     }
-
     companion object {
 
         @JvmStatic

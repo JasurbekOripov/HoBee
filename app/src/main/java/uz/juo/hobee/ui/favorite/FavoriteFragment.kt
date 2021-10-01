@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.NavHostFragment.findNavController
+import uz.juo.hobee.MainActivity
 import uz.juo.hobee.R
 import uz.juo.hobee.adapters.FavoriteAdapter
 import uz.juo.hobee.databinding.FragmentFavoriteBinding
@@ -69,7 +70,6 @@ class FavoriteFragment : Fragment() {
         )
         binding.rv.adapter = adapter
     }
-
 
     companion object {
         @JvmStatic
