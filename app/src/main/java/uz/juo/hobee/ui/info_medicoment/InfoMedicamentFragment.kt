@@ -156,6 +156,7 @@ class InfoMedicamentFragment : Fragment() {
                     binding.country.text = data.country
                     binding.description.text = data.dosage_info
                     binding.manufacturer.text = data.manufacturer
+//                    binding.map.setOnClickListener {  }
                     if (data.price == null || data.price == "") {
                         binding.priceFrom.text = "нет в наличии"
                     } else {

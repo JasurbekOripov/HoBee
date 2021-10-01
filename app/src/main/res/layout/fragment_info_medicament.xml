@@ -48,7 +48,9 @@
             android:id="@+id/tab"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:background="@color/white" />
+            android:background="@color/white"
+            app:tabSelectedTextColor="@color/main_blue2"
+            app:tabTextColor="@color/hobee_grey" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
@@ -59,13 +61,13 @@
         <LinearLayout
             android:id="@+id/linear"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_150sdp"
+            android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="vertical"
             android:paddingLeft="@dimen/_10sdp"
             android:paddingTop="@dimen/_5sdp"
             android:paddingRight="@dimen/_10sdp"
-            android:paddingBottom="@dimen/_10sdp"
+            android:paddingBottom="@dimen/_5sdp"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
@@ -74,7 +76,9 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:paddingRight="@dimen/_10sdp"
-                android:text="India" />
+                android:text="India"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -89,7 +93,9 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:paddingRight="@dimen/_10sdp"
-                android:text="India" />
+                android:text="India"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -104,7 +110,9 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:paddingRight="@dimen/_10sdp"
-                android:text="India" />
+                android:text="India"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -119,7 +127,9 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:paddingRight="@dimen/_10sdp"
-                android:text="India" />
+                android:text="India"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -134,7 +144,9 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:paddingRight="@dimen/_10sdp"
-                android:text="India" />
+                android:text="India"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -146,7 +158,6 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:padding="@dimen/_3sdp">
 
                 <TextView
@@ -177,6 +188,7 @@
                     android:layout_height="@dimen/_30sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:src="@drawable/map"
+                    android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toLeftOf="@id/like"
                     app:layout_constraintTop_toTopOf="parent" />

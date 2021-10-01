@@ -35,6 +35,7 @@ import uz.juo.hobee.models.ItemMedIdPrice
 import uz.juo.hobee.retrofit.ApiClient
 import uz.juo.hobee.room.AppDataBase
 import uz.juo.hobee.room.entity.FavoritesEntity
+import uz.juo.hobee.ui.location.PharmacyMapActivity
 import uz.juo.hobee.utils.*
 import uz.juo.hobee.viewmodel.branch_by_id_map.BranchesByIdViewModel
 import java.lang.Exception
@@ -95,6 +96,18 @@ class InfoViewPagerFragment : Fragment() {
                 }
 
                 override fun itemMapClicked(branch: ItemMedIdPrice, position: Int) {
+                    var i = Intent(requireContext(), PharmacyMapActivity::class.java)
+                    try {
+                        i.putExtra("lat", branch.latitude as Double)
+                        i.putExtra("long", branch.longitude as Double)
+                        startActivity(i)
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            requireContext(),
+                            "No Location at this Pharmacy",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
                 }
             })

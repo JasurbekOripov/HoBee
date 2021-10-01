@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -65,6 +66,7 @@ class BranchFragment : Fragment() {
             checkInternet()
             binding.refresh.isRefreshing = false
         }
+
         return binding.root
     }
 
@@ -78,7 +80,7 @@ class BranchFragment : Fragment() {
         val long = SharedPreference.getInstance(activity?.applicationContext).location.lat
         val lat = SharedPreference.getInstance(activity?.applicationContext).location.long
         branchesViewModel = ViewModelProvider(this)[AllBranchesViewModel::class.java]
-        adapter = AllBranchesAdapter(object : AllBranchesAdapter.setOnClick {
+        adapter = AllBranchesAdapter(requireContext(),object : AllBranchesAdapter.setOnClick {
             override fun itemClicked(branch: Item, position: Int) {
 //                SharedPreference.getInstance(requireContext()).branchId = branch.id.toString()
                 var bundle = Bundle()

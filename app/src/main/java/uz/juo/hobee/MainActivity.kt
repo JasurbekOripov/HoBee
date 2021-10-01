@@ -21,13 +21,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        try {
-//            if (!SharedPreference.getInstance(this).hasApikeyMap) {
-//                SharedPreference.getInstance(this).hasApikeyMap = true
-//            }
-        } catch (e: Exception) {
-            Toast.makeText(this, "Please restart app", Toast.LENGTH_SHORT).show()
-        }
         navController = findNavController(R.id.my_nav_host_fragment)
         setupSmoothBottomMenu()
         navController.navigate(R.id.homeFragment)

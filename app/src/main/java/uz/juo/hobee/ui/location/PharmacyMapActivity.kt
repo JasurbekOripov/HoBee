@@ -15,7 +15,6 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.api.ApiException
@@ -26,17 +25,21 @@ import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.mapkit.user_location.UserLocationLayer
+import com.yandex.runtime.image.ImageProvider
 import uz.juo.hobee.R
 import uz.juo.hobee.utils.SharedPreference
+import com.yandex.mapkit.map.PlacemarkMapObject
+
 
 class PharmacyMapActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var mapView: MapView? = null
     lateinit var userLocationLayer: UserLocationLayer
-    var lat = 0.0
-    var long = 0.0
+    var lat = 59.945933
+    var long = 30.320045
     private val TARGET_LOCATION = Point(59.945933, 30.320045)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,19 +49,38 @@ class PharmacyMapActivity : AppCompatActivity() {
         mapView = findViewById<View>(R.id.mapPharmacy) as MapView
         userLocationLayer = mapkit.createUserLocationLayer(mapView?.mapWindow!!)
         userLocationLayer.isHeadingEnabled = true;
-        var bundle = Bundle()
-        lat = bundle.getDouble("lat", 0.0)
-        long = bundle.getDouble("long", 0.0)
+        var intent = getIntent()
+        lat = intent.getDoubleExtra("lat", 0.0)
+        long = intent.getDoubleExtra("long", 0.0)
         val getCurrent_btn = findViewById<ImageView>(R.id.getCurrentLocationPharmacy)
         getCurrent_btn.setOnClickListener {
-            showUserLocation()
+            showBranch()
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mapView!!.map.mapObjects.addPlacemark(TARGET_LOCATION)
+            mapView!!.map.mapObjects.addPlacemark(
+                Point(lat, long)
+
+//                , ImageProvider.fromResource(this, R.drawable.ic_pin), IconStyle()
+            )
+//            val resourceBackedImage = ImageProvider.fromResource(this, R.drawable.ic_pin)
+//            val placemark =  mapView!!.map.mapObjects.addPlacemark(Point(lat, long), resourceBackedImage)
+
+            val resourceBackedImage = ImageProvider.fromResource(this, R.drawable.ic_pin);
+            val placemark: PlacemarkMapObject = mapView!!.map.mapObjects.addPlacemark(
+                Point(lat, long), resourceBackedImage
+            )
+            placemark.addTapListener(MapObjectTapListener { mapObject, point ->
+
+                return@MapObjectTapListener true
+            })
         }
+        showBranch()
+    }
+
+    private fun showBranch() {
         mapView!!.map.move(
             CameraPosition(
-                TARGET_LOCATION, 14.0f,
+                Point(lat, long), 14.0f,
                 0.0f, 0.0f
             ), Animation(Animation.Type.SMOOTH, 5F),
             null
@@ -163,7 +185,7 @@ class PharmacyMapActivity : AppCompatActivity() {
         when (requestCode) {
             LocationRequest.PRIORITY_HIGH_ACCURACY -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    showUserLocation()
+//                    showUserLocation()
                 } else {
                     Toast.makeText(this, "No GPS Connection", Toast.LENGTH_SHORT).show()
                 }

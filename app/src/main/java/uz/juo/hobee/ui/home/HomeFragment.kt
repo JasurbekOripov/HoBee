@@ -9,11 +9,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.github.ybq.android.spinkit.sprite.Sprite
 import com.github.ybq.android.spinkit.style.FadingCircle
 import com.google.android.material.snackbar.Snackbar
@@ -22,6 +25,7 @@ import uz.juo.hobee.MainActivity
 import uz.juo.hobee.R
 import uz.juo.hobee.adapters.HomeBranchAdapter
 import uz.juo.hobee.adapters.HomeMediacamentAdapter
+import uz.juo.hobee.adapters.HomeRvBannerAdapter
 import uz.juo.hobee.adapters.ViewPagerAdapter
 import uz.juo.hobee.databinding.FragmentHomeBinding
 import uz.juo.hobee.models.Medicament
@@ -41,6 +45,7 @@ private const val ARG_PARAM2 = "param2"
 class HomeFragment : Fragment() {
     lateinit var binding: FragmentHomeBinding
     var connectivty = false
+    var count = 0
     private lateinit var helper: NetworkHelper
     var handler = Handler(Looper.getMainLooper())
     var locationRequest = false
@@ -48,6 +53,7 @@ class HomeFragment : Fragment() {
     lateinit var bestAdapter: HomeMediacamentAdapter
     private var param1: String? = null
     private var param2: String? = null
+    lateinit var viewPagerAdapter: HomeRvBannerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -64,6 +70,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+        viewPagerAdapter = HomeRvBannerAdapter(requireContext())
         setViewPagerData()
         val progressBar = binding.spinKit as ProgressBar
         val doubleBounce: Sprite = FadingCircle()
@@ -76,6 +83,14 @@ class HomeFragment : Fragment() {
             var i = Intent(requireContext(), MapActivity::class.java)
             startActivity(i)
         }
+        binding.viewPager.adapter = viewPagerAdapter
+        binding.viewPager.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+//               var anim = AnimationUtils.loadAnimation(requireContext(), R.anim.)
+//               binding.viewPager.startAnimation(anim)
+            }
+        })
         return binding.root
     }
 
@@ -101,6 +116,7 @@ class HomeFragment : Fragment() {
         super.onStart()
         checkLocation()
     }
+
     private fun checkLocation() {
         if (!SharedPreference.getInstance(requireContext()).hasLocation) {
             val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
@@ -109,8 +125,8 @@ class HomeFragment : Fragment() {
                 .setPositiveButton("Ok") { dialog, which ->
 //                    dialog.cancel()
 //            if (Functions().checkPermission(requireContext())) {
-                var i = Intent(requireContext(), MapActivity::class.java)
-                startActivity(i)
+                    var i = Intent(requireContext(), MapActivity::class.java)
+                    startActivity(i)
 //            } else {
 
 //            }
@@ -118,7 +134,7 @@ class HomeFragment : Fragment() {
                 }
                 .setNegativeButton("No") { a, i ->
                     a.cancel()
-                    SharedPreference.getInstance(requireContext()).hasLocation=true
+                    SharedPreference.getInstance(requireContext()).hasLocation = true
                     SharedPreference.getInstance(requireContext())
                         .setLocation("${41.311081}", "${69.240562}")
                     try {
@@ -201,7 +217,8 @@ class HomeFragment : Fragment() {
         try {
             val long = SharedPreference.getInstance(requireContext()).location.lat
             val lat = SharedPreference.getInstance(requireContext()).location.long
-            val list = ApiClient.apiService.getNeariestPharmacy(lat, long) as ArrayList<NeariestPharmcy>
+            val list =
+                ApiClient.apiService.getNeariestPharmacy(lat, long) as ArrayList<NeariestPharmcy>
             nearByBranchAdapter = HomeBranchAdapter(list, object : HomeBranchAdapter.itemOnCLick {
                 override fun itemClick(id: Int) {
                     val bundle = Bundle()
@@ -218,25 +235,27 @@ class HomeFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setViewPagerData() {
-        val wormDotsIndicator = binding.springDotsIndicator
-        val viewPager = binding.viewPager
-        var viewPagerAdapter = ViewPagerAdapter(requireActivity())
-        binding.viewPager.adapter = viewPagerAdapter
-        handler = Handler(Looper.getMainLooper())
-        val update = Runnable {
-            if (viewPager.currentItem == 2) {
-                viewPager.currentItem = 0
-            } else {
-                viewPager.currentItem++
-            }
-        }
-        Timer().schedule(object : TimerTask() {
-            override fun run() {
-                handler.post(update)
-            }
-        }, 2500, 2200)
-        binding.viewPager.setPageTransformer(ZoomOutPageTransformer())
-        wormDotsIndicator.setViewPager2(binding.viewPager)
+//        val wormDotsIndicator = binding.springDotsIndicator
+//        handler = Handler(Looper.getMainLooper())
+//        val update = Runnable {
+//            if (count == 2) {
+
+//                binding.viewPager.scrollToPosition(0)
+//                count = 0
+//            } else {
+////                var anim = AnimationUtils.loadAnimation(requireContext(), R.anim.rv)
+////                binding.viewPager.startAnimation(anim)
+////                binding.viewPager.scrollToPosition(1)
+//            }
+//        }
+//        Timer().schedule(object : TimerTask() {
+//            override fun run() {
+//                handler.post(update)
+//            }
+//        }, 2500, 2200)
+//        binding.viewPager.setPageTransformer(ZoomOutPageTransformer())
+//        wormDotsIndicator.setViewPager2(binding.viewPager)
+
     }
 
     override fun onResume() {
@@ -255,6 +274,7 @@ class HomeFragment : Fragment() {
             hide()
         }
     }
+
     companion object {
 
         @JvmStatic

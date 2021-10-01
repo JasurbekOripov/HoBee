@@ -1,16 +1,19 @@
 package uz.juo.hobee.adapters
 
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import uz.juo.hobee.R
 import uz.juo.hobee.databinding.BranchRvItemBinding
 import uz.juo.hobee.models.Item
 import uz.juo.hobee.utils.Functions
 
-class AllBranchesAdapter(var itemClick: setOnClick) :
+class AllBranchesAdapter(var context: Context,var itemClick: setOnClick) :
     PagingDataAdapter<Item, AllBranchesAdapter.Vh>(MyDiffUtil()) {
 
     inner class Vh(var item: BranchRvItemBinding) :
@@ -19,6 +22,8 @@ class AllBranchesAdapter(var itemClick: setOnClick) :
             item.name.text = branch.name
             item.distance1.text = Functions().kmConvertor(branch.distance)
             item.writeTime.text = Functions().getWorkingTime(branch.start_time, branch.end_time)
+            var anim = AnimationUtils.loadAnimation(context, R.anim.rv)
+            item.root.startAnimation(anim)
             item.root.setOnClickListener {
                 itemClick.itemClicked(branch, position)
             }

@@ -3,6 +3,7 @@ package uz.juo.hobee.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import uz.juo.hobee.R
 import uz.juo.hobee.databinding.BestMdeicamentsItemBinding
@@ -24,6 +25,8 @@ class FavoriteAdapter(
             } else {
                 item.price.text = ("от ${mediacament.price}")
             }
+            var anim = AnimationUtils.loadAnimation(context, R.anim.rv)
+            item.root.startAnimation(anim)
             item.manufacturer.text = mediacament.manufacturer ?: ""
             item.like.setImageResource(R.drawable.ic_liked)
             item.root.setOnClickListener {

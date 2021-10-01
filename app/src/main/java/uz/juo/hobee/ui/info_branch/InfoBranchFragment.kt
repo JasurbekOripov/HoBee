@@ -62,10 +62,9 @@ class InfoBranchFragment : Fragment() {
         lifecycleScope.launch {
             var branch = ApiClient.apiService.getPharmacyById(param1?.toInt()!!)
             binding.map.setOnClickListener {
-                var bundle = Bundle()
-                bundle.putDouble("lat", branch.latitude)
-                bundle.putDouble("long", branch.longitude)
                 var i = Intent(requireContext(), PharmacyMapActivity::class.java)
+                i.putExtra("lat", branch.latitude)
+                i.putExtra("long", branch.longitude)
                 startActivity(i)
             }
             binding.phone.setOnClickListener {
@@ -93,8 +92,6 @@ class InfoBranchFragment : Fragment() {
                     })
             }
         })
-
-
         adapter = BranchInfoAdapter(requireContext(), object : BranchInfoAdapter.setOnClick {
             override fun itemClick(mediacament: ItemX, position: Int) {
                 var bundle = Bundle()

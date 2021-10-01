@@ -22,6 +22,8 @@ class SearchMedicamentAdapter(var context: Context, var itemClick: setOnClick) :
         fun onBind(mediacament: ItemX, position: Int) {
             var likable = false
             item.name.text = mediacament.name ?: ""
+            var anim = AnimationUtils.loadAnimation(context, R.anim.rv)
+            item.root.startAnimation(anim)
             if (mediacament.price == null || mediacament.price == "") {
                 item.price.text = "нет в наличии"
             } else {

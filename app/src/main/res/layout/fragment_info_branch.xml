@@ -44,18 +44,22 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_38sdp"
         android:layout_margin="@dimen/_5sdp"
+        android:backgroundTint="@color/white"
         app:cardCornerRadius="@dimen/_5sdp">
 
         <EditText
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textColor="@color/black"
             android:layout_gravity="center"
             android:layout_margin="@dimen/_5sdp"
             android:background="@color/white"
             android:drawableLeft="@drawable/ic_baseline_search_24"
             android:drawablePadding="@dimen/_5sdp"
-            android:hint="search medicaments" />
+            android:hint="search medicaments"
+            android:padding="@dimen/_5sdp"
+            android:textSize="@dimen/_12sdp" />
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView

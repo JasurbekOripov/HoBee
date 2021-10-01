@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.SearchView
@@ -66,6 +67,7 @@ class SearchMedicamentFragment : Fragment() {
             loadData()
             binding.refresh.isRefreshing = false
         }
+
         return binding.root
     }
 
@@ -129,7 +131,7 @@ class SearchMedicamentFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-//        (activity as MainActivity).hideBottomBar()
+        (activity as MainActivity).hideBottomBar()
     }
 
     override fun onDestroy() {
