@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:paddingRight="@dimen/_10sdp"
-                android:text="India"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="@dimen/_11sdp" />
 
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:paddingRight="@dimen/_10sdp"
-                android:text="India"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="@dimen/_11sdp" />
 
@@ -110,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:paddingRight="@dimen/_10sdp"
-                android:text="India"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="@dimen/_11sdp" />
 
@@ -127,7 +127,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:paddingRight="@dimen/_10sdp"
-                android:text="India"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="@dimen/_11sdp" />
 
@@ -144,7 +144,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:paddingRight="@dimen/_10sdp"
-                android:text="India"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="@dimen/_11sdp" />
 

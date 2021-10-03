@@ -25,7 +25,7 @@ class BranchInfoAdapter(var context: Context, var itemClick: setOnClick) :
             if (mediacament.price == null || mediacament.price == "") {
                 item.price.text = "нет в наличии"
             } else {
-                item.price.text = ("от ${mediacament.price}")
+                item.price.text = ("${mediacament.price}")
             }
             item.manufacturer.text = mediacament.manufacturer ?: ""
             for (i in Functions().getFavorite(context)) {

@@ -28,6 +28,7 @@ import uz.juo.hobee.room.AppDataBase
 import uz.juo.hobee.room.entity.FavoritesEntity
 import uz.juo.hobee.ui.location.MapActivity
 import uz.juo.hobee.ui.location.PharmacyMapActivity
+import uz.juo.hobee.utils.Functions
 import uz.juo.hobee.utils.SharedPreference
 import uz.juo.hobee.viewmodel.get_medicaments_pharmacy.MedicamentsPharmacyModelFactory
 import uz.juo.hobee.viewmodel.get_medicaments_pharmacy.MedicamentsPharmacyViewModel
@@ -63,6 +64,8 @@ class InfoBranchFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 var branch = ApiClient.apiService.getPharmacyById(param1?.toInt()!!)
+                binding.workingTime.text =
+                    Functions().getWorkingTime(branch.start_time, branch.end_time)
                 binding.map.setOnClickListener {
                     var i = Intent(requireContext(), PharmacyMapActivity::class.java)
                     i.putExtra("lat", branch.latitude)
@@ -133,7 +136,7 @@ class InfoBranchFragment : Fragment() {
             lifecycleScope.launch {
                 try {
                     adapter.submitData(it)
-                }catch (e:Exception){
+                } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
                 }
 
