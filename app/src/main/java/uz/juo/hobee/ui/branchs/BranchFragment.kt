@@ -107,7 +107,7 @@ class BranchFragment : Fragment() {
                     })
             }
         })
-        branchesViewModel.branches(name, lat, long).observe(viewLifecycleOwner, Observer {
+            branchesViewModel.branches(name, lat, long).observe(viewLifecycleOwner, Observer {
             lifecycleScope.launch {
                 adapter.submitData(it)
             }
@@ -119,17 +119,13 @@ class BranchFragment : Fragment() {
     private fun checkInternet() {
         Log.d(ContentValues.TAG, "checkInternet: worked ")
         if (helper.isNetworkConnected()) {
-//            if (!internetConnected) {
             getBranches()
-//                internetConnected = true
-//            }
             hideLoading()
         } else {
             view?.let {
                 Snackbar.make(it, "No Internet connection", Snackbar.LENGTH_LONG)
                     .show()
             }
-//            internetConnected = false
             showLoading()
         }
     }

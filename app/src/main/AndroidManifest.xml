@@ -20,7 +20,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
-            android:name="uz.juo.hobee.ui.splash.SplashActivity"
+            android:name=".ui.branchs_on_map.BranchsOnMapActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,21 +32,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="uz.juo.hobee.MainActivity"
+            android:screenOrientation="portrait"
+            android:name=".MainActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan">
-
-        </activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="uz.juo.hobee.ui.location.MapActivity"
-            android:exported="true">
-
-        </activity>
+            android:name=".ui.location.MapActivity"
+            android:exported="true" />
         <activity
-            android:name="uz.juo.hobee.ui.location.PharmacyMapActivity"
-            android:exported="true">
-
-        </activity>
+            android:name=".ui.location.PharmacyMapActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

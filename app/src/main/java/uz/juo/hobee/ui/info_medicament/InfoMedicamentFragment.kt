@@ -1,6 +1,7 @@
-package uz.juo.hobee.ui.info_medicoment
+package uz.juo.hobee.ui.info_medicament
 
 import android.content.ContentValues
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -23,6 +24,7 @@ import uz.juo.hobee.databinding.FragmentInfoMedicamentBinding
 import uz.juo.hobee.retrofit.ApiClient
 import uz.juo.hobee.room.AppDataBase
 import uz.juo.hobee.room.entity.FavoritesEntity
+import uz.juo.hobee.ui.branchs_on_map.BranchsOnMapActivity
 import uz.juo.hobee.utils.Functions
 import uz.juo.hobee.utils.MyInterpolator
 import uz.juo.hobee.utils.NetworkHelper
@@ -58,8 +60,13 @@ class InfoMedicamentFragment : Fragment() {
         binding = FragmentInfoMedicamentBinding.inflate(inflater, container, false)
         binding.viewPager.isUserInputEnabled = false
         setData()
+        binding.map.setOnClickListener {
+            var i = Intent(requireContext(), BranchsOnMapActivity::class.java)
+            i.putExtra("id",SharedPreference.getInstance(requireContext()).lang.toInt() )
+            startActivity(i)
+        }
         binding.back.setOnClickListener {
-           findNavController().popBackStack()
+            findNavController().popBackStack()
         }
         binding.tab.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -197,6 +204,7 @@ class InfoMedicamentFragment : Fragment() {
         super.onDestroy()
         (activity as MainActivity).showBottomBar()
     }
+
     companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =

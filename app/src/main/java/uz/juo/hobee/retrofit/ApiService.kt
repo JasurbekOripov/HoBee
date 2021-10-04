@@ -59,6 +59,15 @@ interface ApiService {
         @Query("page") page: Int,
     ): BranchesByMedIdPrice
 
+    @GET("branches/medicament/map")
+    suspend fun getBranchesForMap(
+        @Query("latitude") lat: String,
+        @Query("longitude") long: String,
+        @Query("medicament_id") id: Int,
+        @Query("limit") limit: Int,
+        @Query("page") page: Int,
+    ): BranchesByMedIdPrice
+
     @GET("branches")
     suspend fun getAllBranches(
         @Query("limit") limit: Int,
@@ -66,5 +75,13 @@ interface ApiService {
         @Query("name") name: String,
         @Query("latitude") lat: String,
         @Query("longitude") long: String
+    ): AllBranches
+
+    @GET("branches")
+
+    suspend fun getAllManufacturer(
+        @Query("limit") limit: Int,
+        @Query("page") page: Int,
+        @Query("name") name: String
     ): AllBranches
 }

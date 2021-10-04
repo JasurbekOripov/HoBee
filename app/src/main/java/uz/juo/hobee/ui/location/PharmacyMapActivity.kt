@@ -40,7 +40,6 @@ class PharmacyMapActivity : AppCompatActivity() {
     lateinit var userLocationLayer: UserLocationLayer
     var lat = 59.945933
     var long = 30.320045
-    private val TARGET_LOCATION = Point(59.945933, 30.320045)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MapKitFactory.initialize(this)
@@ -57,22 +56,10 @@ class PharmacyMapActivity : AppCompatActivity() {
             showBranch()
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mapView!!.map.mapObjects.addPlacemark(
-                Point(lat, long)
-
-//                , ImageProvider.fromResource(this, R.drawable.ic_pin), IconStyle()
-            )
-//            val resourceBackedImage = ImageProvider.fromResource(this, R.drawable.ic_pin)
-//            val placemark =  mapView!!.map.mapObjects.addPlacemark(Point(lat, long), resourceBackedImage)
-
-            val resourceBackedImage = ImageProvider.fromResource(this, R.drawable.ic_pin);
-            val placemark: PlacemarkMapObject = mapView!!.map.mapObjects.addPlacemark(
-                Point(lat, long), resourceBackedImage
-            )
-            placemark.addTapListener(MapObjectTapListener { mapObject, point ->
-
-                return@MapObjectTapListener true
-            })
+            val mark: PlacemarkMapObject = mapView!!.map.mapObjects.addPlacemark(Point(lat, long))
+            mark.opacity = 0.5f
+//            mark.setIcon(ImageProvider.fromResource(this, R.drawable.ic_pin))
+            mark.isDraggable = true
         }
         showBranch()
     }
@@ -125,7 +112,7 @@ class PharmacyMapActivity : AppCompatActivity() {
     fun cameraMoveOn(lat: Double, long: Double) {
         mapView!!.map.move(
             CameraPosition(
-                Point(lat, long), 14.0f, 0.0f, 0.0f
+                Point(lat, long), 4.0f, 0.0f, 0.0f
             ),
             Animation(Animation.Type.SMOOTH, 2F), null
         )

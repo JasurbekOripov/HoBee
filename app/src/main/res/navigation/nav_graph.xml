@@ -27,7 +27,7 @@
         tools:layout="@layout/fragment_info_branch" />
     <fragment
         android:id="@+id/infoMedicamentFragment"
-        android:name="uz.juo.hobee.ui.info_medicoment.InfoMedicamentFragment"
+        android:name="uz.juo.hobee.ui.info_medicament.InfoMedicamentFragment"
         android:label="fragment_info_medicament"
         tools:layout="@layout/fragment_info_medicament" />
     <fragment
