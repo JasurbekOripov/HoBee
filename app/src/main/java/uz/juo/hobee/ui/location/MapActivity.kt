@@ -75,7 +75,7 @@ class MapActivity : AppCompatActivity() {
         mapkit.createLocationManager().requestSingleUpdate(object : LocationListener {
             override fun onLocationUpdated(p0: com.yandex.mapkit.location.Location) {
                 mapView!!.map.move(
-                    CameraPosition(p0.position, 14.0f, 0.0f, 0.0f),
+                    CameraPosition(p0.position, 20.0f, 0.0f, 0.0f),
                     Animation(Animation.Type.SMOOTH, 1.0F), null
                 )
                 Log.d("TagCheck", "getUserLocation121212 " + p0.position.longitude)
@@ -141,12 +141,17 @@ class MapActivity : AppCompatActivity() {
 
 
     fun cameraMoveOn(lat: Double, long: Double) {
-        mapView!!.map.move(
-            CameraPosition(
-                Point(lat, long), 14.0f, 0.0f, 0.0f
-            ),
-            Animation(Animation.Type.SMOOTH, 2F), null
-        )
+        try {
+            mapView!!.map.move(
+                CameraPosition(
+                    Point(lat, long), 14.0f, 0.0f, 0.0f
+                ),
+                Animation(Animation.Type.SMOOTH, 2F), null
+            )
+        } catch (e: java.lang.Exception) {
+            Toast.makeText(this, "Internet Error", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     override fun onStop() {

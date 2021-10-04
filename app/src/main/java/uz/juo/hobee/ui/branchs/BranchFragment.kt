@@ -10,9 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -21,7 +19,6 @@ import com.github.ybq.android.spinkit.sprite.Sprite
 import com.github.ybq.android.spinkit.style.FadingCircle
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
-import uz.juo.hobee.MainActivity
 import uz.juo.hobee.R
 import uz.juo.hobee.adapters.AllBranchesAdapter
 import uz.juo.hobee.databinding.FragmentBranchBinding
@@ -37,7 +34,6 @@ class BranchFragment : Fragment() {
     private lateinit var helper: NetworkHelper
     lateinit var binding: FragmentBranchBinding
 
-    ////    var internetConnected = false
     lateinit var branchesViewModel: AllBranchesViewModel
     lateinit var adapter: AllBranchesAdapter
     private var param1: String? = null
@@ -66,7 +62,6 @@ class BranchFragment : Fragment() {
             checkInternet()
             binding.refresh.isRefreshing = false
         }
-
         return binding.root
     }
 
@@ -80,9 +75,8 @@ class BranchFragment : Fragment() {
         val long = SharedPreference.getInstance(activity?.applicationContext).location.lat
         val lat = SharedPreference.getInstance(activity?.applicationContext).location.long
         branchesViewModel = ViewModelProvider(this)[AllBranchesViewModel::class.java]
-        adapter = AllBranchesAdapter(requireContext(),object : AllBranchesAdapter.setOnClick {
+        adapter = AllBranchesAdapter(requireContext(), object : AllBranchesAdapter.setOnClick {
             override fun itemClicked(branch: Item, position: Int) {
-//                SharedPreference.getInstance(requireContext()).branchId = branch.id.toString()
                 var bundle = Bundle()
                 bundle.putString("param1", branch.id.toString())
                 findNavController().navigate(R.id.infoBranchFragment, bundle)
@@ -107,7 +101,7 @@ class BranchFragment : Fragment() {
                     })
             }
         })
-            branchesViewModel.branches(name, lat, long).observe(viewLifecycleOwner, Observer {
+        branchesViewModel.branches(name, lat, long).observe(viewLifecycleOwner, Observer {
             lifecycleScope.launch {
                 adapter.submitData(it)
             }
@@ -149,7 +143,6 @@ class BranchFragment : Fragment() {
 
     fun showLoading() {
         binding.spinKit.visibility = View.VISIBLE
-//        internetConnected = false
         binding.rv.visibility = View.INVISIBLE
         binding.searchLinear.visibility = View.INVISIBLE
     }

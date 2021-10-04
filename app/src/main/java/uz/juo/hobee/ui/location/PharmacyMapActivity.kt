@@ -32,6 +32,7 @@ import com.yandex.runtime.image.ImageProvider
 import uz.juo.hobee.R
 import uz.juo.hobee.utils.SharedPreference
 import com.yandex.mapkit.map.PlacemarkMapObject
+import java.lang.Exception
 
 
 class PharmacyMapActivity : AppCompatActivity() {
@@ -53,7 +54,7 @@ class PharmacyMapActivity : AppCompatActivity() {
         long = intent.getDoubleExtra("long", 0.0)
         val getCurrent_btn = findViewById<ImageView>(R.id.getCurrentLocationPharmacy)
         getCurrent_btn.setOnClickListener {
-            showBranch()
+            cameraMoveOn(lat,long)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val mark: PlacemarkMapObject = mapView!!.map.mapObjects.addPlacemark(Point(lat, long))
@@ -61,17 +62,7 @@ class PharmacyMapActivity : AppCompatActivity() {
 //            mark.setIcon(ImageProvider.fromResource(this, R.drawable.ic_pin))
             mark.isDraggable = true
         }
-        showBranch()
-    }
-
-    private fun showBranch() {
-        mapView!!.map.move(
-            CameraPosition(
-                Point(lat, long), 14.0f,
-                0.0f, 0.0f
-            ), Animation(Animation.Type.SMOOTH, 5F),
-            null
-        )
+        cameraMoveOn(lat,long)
     }
 
     private fun showUserLocation() {
@@ -110,12 +101,16 @@ class PharmacyMapActivity : AppCompatActivity() {
     }
 
     fun cameraMoveOn(lat: Double, long: Double) {
-        mapView!!.map.move(
-            CameraPosition(
-                Point(lat, long), 4.0f, 0.0f, 0.0f
-            ),
-            Animation(Animation.Type.SMOOTH, 2F), null
-        )
+        try {
+            mapView!!.map.move(
+                CameraPosition(
+                    Point(lat, long), 14.0f, 0.0f, 0.0f
+                ),
+                Animation(Animation.Type.SMOOTH, 2F), null
+            )
+        }catch (e:Exception){
+            Toast.makeText(this, "Internet Error", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onStop() {
