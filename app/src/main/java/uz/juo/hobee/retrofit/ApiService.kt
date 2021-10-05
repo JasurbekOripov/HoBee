@@ -38,7 +38,8 @@ interface ApiService {
     suspend fun getMedicamentByName(
         @Query("limit") limit: Int,
         @Query("page") page: Int,
-        @Query("name") name: String
+        @Query("name") name: String,
+        @Query("manufacturer") manufacturer: String
     ): SearchMedicament
 
     @GET("branches/medicament/price")
@@ -68,6 +69,14 @@ interface ApiService {
         @Query("page") page: Int,
     ): BranchesByMedIdPrice
 
+    @GET("branches/medicament/map")
+    suspend fun branchPriceForMap(
+        @Query("latitude") lat: String,
+        @Query("longitude") long: String,
+        @Query("medicament_id") id: Int
+    ): BranchesByMedIdPrice
+
+
     @GET("branches")
     suspend fun getAllBranches(
         @Query("limit") limit: Int,
@@ -77,11 +86,10 @@ interface ApiService {
         @Query("longitude") long: String
     ): AllBranches
 
-    @GET("branches")
-
+    @GET("manufacturer")
     suspend fun getAllManufacturer(
         @Query("limit") limit: Int,
         @Query("page") page: Int,
         @Query("name") name: String
-    ): AllBranches
+    ): Manufacturer
 }

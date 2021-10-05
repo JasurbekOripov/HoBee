@@ -26,7 +26,6 @@ import uz.juo.hobee.R
 import uz.juo.hobee.adapters.HomeBranchAdapter
 import uz.juo.hobee.adapters.HomeMediacamentAdapter
 import uz.juo.hobee.adapters.HomeRvBannerAdapter
-import uz.juo.hobee.adapters.ViewPagerAdapter
 import uz.juo.hobee.databinding.FragmentHomeBinding
 import uz.juo.hobee.models.Medicament
 import uz.juo.hobee.models.NeariestPharmcy
@@ -36,7 +35,6 @@ import uz.juo.hobee.room.entity.FavoritesEntity
 import uz.juo.hobee.ui.location.MapActivity
 import uz.juo.hobee.utils.*
 import java.lang.Exception
-import java.util.*
 import kotlin.collections.ArrayList
 
 private const val ARG_PARAM1 = "param1"
@@ -45,22 +43,19 @@ private const val ARG_PARAM2 = "param2"
 class HomeFragment : Fragment() {
     lateinit var binding: FragmentHomeBinding
     var connectivty = false
-    var count = 0
     private lateinit var helper: NetworkHelper
-    var handler = Handler(Looper.getMainLooper())
-    var locationRequest = false
     private lateinit var nearByBranchAdapter: HomeBranchAdapter
     lateinit var bestAdapter: HomeMediacamentAdapter
     private var param1: String? = null
     private var param2: String? = null
     lateinit var viewPagerAdapter: HomeRvBannerAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-
         helper = NetworkHelper((requireContext()))
     }
 
@@ -71,12 +66,16 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         viewPagerAdapter = HomeRvBannerAdapter(requireContext())
-        setViewPagerData()
         val progressBar = binding.spinKit as ProgressBar
         val doubleBounce: Sprite = FadingCircle()
         progressBar.indeterminateDrawable = doubleBounce
         binding.card.setOnClickListener {
             findNavController().navigate(R.id.searchMedicamentFragment)
+        }
+        if (helper.isNetworkConnected()) {
+            lifecycleScope.launch {
+                getBestMed()
+            }
         }
         checkInternet()
         binding.sendLocationIcon.setOnClickListener {
@@ -123,26 +122,21 @@ class HomeFragment : Fragment() {
             builder.setTitle("Location Permission")
                 .setMessage("Please for using this app grant the permission and mark location")
                 .setPositiveButton("Ok") { dialog, which ->
-//                    dialog.cancel()
-//            if (Functions().checkPermission(requireContext())) {
                     var i = Intent(requireContext(), MapActivity::class.java)
                     startActivity(i)
-//            } else {
-
-//            }
                     dialog.cancel()
                 }
                 .setNegativeButton("No") { a, i ->
                     a.cancel()
-                    SharedPreference.getInstance(requireContext()).hasLocation = true
-                    SharedPreference.getInstance(requireContext())
-                        .setLocation("${41.311081}", "${69.240562}")
                     try {
+                        SharedPreference.getInstance(requireContext()).hasLocation = true
                         var name = Functions().getLocationName(
                             requireContext(),
                             41.311081,
                             69.240562,
                         )
+                        SharedPreference.getInstance(requireContext())
+                            .setLocation("${41.311081}", "${69.240562}", name)
                         binding.adress.text = name
                     } catch (e: Exception) {
                         Toast.makeText(requireContext(), "Wrong location", Toast.LENGTH_SHORT)
@@ -157,13 +151,8 @@ class HomeFragment : Fragment() {
             try {
                 lifecycleScope.launch {
                     getNeariestPharmacy()
-                    var l = SharedPreference.getInstance(requireContext()).location
-                    var name = Functions().getLocationName(
-                        requireContext(),
-                        l.long.toDouble(),
-                        l.lat.toDouble()
-                    )
-                    binding.adress.text = name
+                    binding.adress.text =
+                        SharedPreference.getInstance(requireContext()).location.name
                 }
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Wrong location", Toast.LENGTH_SHORT).show()
@@ -233,31 +222,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun setViewPagerData() {
-//        val wormDotsIndicator = binding.springDotsIndicator
-//        handler = Handler(Looper.getMainLooper())
-//        val update = Runnable {
-//            if (count == 2) {
-
-//                binding.viewPager.scrollToPosition(0)
-//                count = 0
-//            } else {
-////                var anim = AnimationUtils.loadAnimation(requireContext(), R.anim.rv)
-////                binding.viewPager.startAnimation(anim)
-////                binding.viewPager.scrollToPosition(1)
-//            }
-//        }
-//        Timer().schedule(object : TimerTask() {
-//            override fun run() {
-//                handler.post(update)
-//            }
-//        }, 2500, 2200)
-//        binding.viewPager.setPageTransformer(ZoomOutPageTransformer())
-//        wormDotsIndicator.setViewPager2(binding.viewPager)
-
-    }
-
     override fun onResume() {
         super.onResume()
         checkInternet()
@@ -266,9 +230,6 @@ class HomeFragment : Fragment() {
 
     private fun checkInternet() {
         if (helper.isNetworkConnected()) {
-            lifecycleScope.launch {
-                getBestMed()
-            }
             show()
         } else {
             hide()
@@ -276,7 +237,6 @@ class HomeFragment : Fragment() {
     }
 
     companion object {
-
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             HomeFragment().apply {

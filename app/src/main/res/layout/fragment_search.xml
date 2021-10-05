@@ -8,11 +8,11 @@
     tools:context=".ui.searchMedicaments.SearchMedicamentFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="@color/hobee_grey2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/hobee_grey2">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/searchLinear"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
@@ -30,20 +30,52 @@
                 app:cardCornerRadius="@dimen/_4sdp"
                 app:cardUseCompatPadding="true">
 
-                <EditText
-                    android:id="@+id/search"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/_3sdp"
-                    android:background="@color/white"
-                    android:drawableLeft="@drawable/ic_baseline_search_24"
-                    android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Search"
-                    android:paddingLeft="@dimen/_5sdp"
-                    android:textColor="@color/black" />
+                    android:layout_height="match_parent">
+
+                    <EditText
+                        android:id="@+id/search"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/_3sdp"
+                        android:background="@color/white"
+                        android:drawableLeft="@drawable/ic_baseline_search_24"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:hint="Search"
+                        android:paddingLeft="@dimen/_5sdp"
+                        android:textColor="@color/black" />
+
+                    <ImageView
+                        android:id="@+id/filter"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="right"
+                        android:padding="@dimen/_10sdp"
+                        android:src="@drawable/ic_filter"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/filter_status"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:visibility="invisible"
+                        android:layout_gravity="right"
+                        android:src="@drawable/check_box"
+                        app:layout_constraintVertical_bias="0.7"
+                        app:layout_constraintHorizontal_bias="0.7"
+                        app:layout_constraintRight_toRightOf="@id/filter"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="@id/filter"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
-        </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/spin_kit"

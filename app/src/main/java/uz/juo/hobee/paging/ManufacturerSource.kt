@@ -1,22 +1,26 @@
 package uz.juo.hobee.paging
 
-import android.content.Context
-import android.widget.Toast
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import uz.juo.hobee.models.ItemX
+import uz.juo.hobee.models.ManufacturerItem
 import uz.juo.hobee.retrofit.ApiClient
 
-class SearchMedicamentSource(var context: Context, var name: String,var filter: String) :
-    PagingSource<Int, ItemX>() {
-    override fun getRefreshKey(state: PagingState<Int, ItemX>): Int? {
+class ManufacturerSource(
+    var name: String
+) :
+    PagingSource<Int, ManufacturerItem>() {
+    override fun getRefreshKey(state: PagingState<Int, ManufacturerItem>): Int? {
         return state.anchorPosition
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ItemX> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ManufacturerItem> {
         return try {
             var pageNumber = params.key ?: 1
-            var list = ApiClient.apiService.getMedicamentByName(10, pageNumber, name = name,filter)
+            var list = ApiClient.apiService.getAllManufacturer(
+                limit = 20,
+                page = pageNumber,
+                name = name,
+            )
             if (pageNumber > 1) {
                 LoadResult.Page(list.items, pageNumber - 1, pageNumber + 1)
             } else {

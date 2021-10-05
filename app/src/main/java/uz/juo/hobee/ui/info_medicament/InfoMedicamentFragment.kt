@@ -40,8 +40,8 @@ class InfoMedicamentFragment : Fragment() {
 
     //    private var param1: Int? = null
     lateinit var viewPageraAdapter: MedInfoViewPagerAdapter
-//    private var param2: String? = null
 
+    //    private var param2: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -62,7 +62,7 @@ class InfoMedicamentFragment : Fragment() {
         setData()
         binding.map.setOnClickListener {
             var i = Intent(requireContext(), BranchsOnMapActivity::class.java)
-            i.putExtra("id",SharedPreference.getInstance(requireContext()).lang.toInt() )
+            i.putExtra("id", SharedPreference.getInstance(requireContext()).lang.toInt())
             startActivity(i)
         }
         binding.back.setOnClickListener {
@@ -95,7 +95,7 @@ class InfoMedicamentFragment : Fragment() {
                         }
                     }
                     if (!likable) {
-                        val myAnim: Animation = AnimationUtils.loadAnimation(context, R.anim.bounce)
+                        val myAnim: Animation = AnimationUtils.loadAnimation(context, R.anim.bounce_for_like)
                         val interpolator = MyInterpolator(0.2, 20.0)
                         myAnim.interpolator = interpolator
                         binding.like.startAnimation(myAnim)
@@ -119,11 +119,13 @@ class InfoMedicamentFragment : Fragment() {
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
                 }
-
             }
         }
         viewPageraAdapter = MedInfoViewPagerAdapter(requireActivity())
         binding.viewPager.adapter = viewPageraAdapter
+        TabLayoutMediator(binding.tab, binding.viewPager) { tab, pos ->
+            tab.text = loadDat()[pos]
+        }.attach()
         return binding.root
     }
 
@@ -153,9 +155,6 @@ class InfoMedicamentFragment : Fragment() {
             try {
                 binding.linear.visibility = View.VISIBLE
                 lifecycleScope.launch {
-                    binding.name.text = ApiClient.apiService.getMedicamentById(
-                        SharedPreference.getInstance(requireContext()).lang.toInt()
-                    ).name
                     var data = ApiClient.apiService.getMedicamentById(pos)
                     Log.d(ContentValues.TAG, "loadData1212121212: $data")
                     checkLikable()
@@ -163,17 +162,12 @@ class InfoMedicamentFragment : Fragment() {
                     binding.country.text = data.country
                     binding.description.text = data.dosage_info
                     binding.manufacturer.text = data.manufacturer
-//                    binding.map.setOnClickListener {  }
                     if (data.price == null || data.price == "") {
                         binding.priceFrom.text = "нет в наличии"
                     } else {
                         binding.priceFrom.text = ("от ${data.price}")
                     }
                 }
-
-                TabLayoutMediator(binding.tab, binding.viewPager) { tab, pos ->
-                    tab.text = loadDat()[pos]
-                }.attach()
             } catch (e: Exception) {
 //                Toast.makeText(requireContext(), "id null", Toast.LENGTH_SHORT).show()
             }
@@ -196,8 +190,7 @@ class InfoMedicamentFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         pos = SharedPreference.getInstance(requireContext()).lang.toInt()
-        setData()
-//        (activity as MainActivity).hideBottomBar()
+//        setData()
     }
 
     override fun onDestroy() {

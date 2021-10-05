@@ -34,7 +34,6 @@ class FavoriteAdapter(
             }
             item.like.setOnClickListener {
                 var stateLike = false
-                item.like.setImageResource(R.drawable.ic_liked)
                 itemClick.itemLikeClick(mediacament, position, stateLike)
             }
         }

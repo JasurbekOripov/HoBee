@@ -56,7 +56,7 @@ class HomeMediacamentAdapter(
                     }
                 }
                 if (!stateLike) {
-                    val myAnim: Animation = AnimationUtils.loadAnimation(context, R.anim.bounce)
+                    val myAnim: Animation = AnimationUtils.loadAnimation(context, R.anim.bounce_for_like)
                     val interpolator = MyInterpolator(0.2, 20.0)
                     myAnim.interpolator = interpolator
                     item.like.startAnimation(myAnim)

@@ -10,8 +10,8 @@ import androidx.paging.cachedIn
 import uz.juo.hobee.paging.SearchMedicamentSource
 
 class SearchViewModel : ViewModel() {
-    fun medicaments(context: Context, name: String) =
-        Pager(PagingConfig(20)) { SearchMedicamentSource(context, name) }.flow.cachedIn(
+    fun medicaments(context: Context, name: String,filter:String) =
+        Pager(PagingConfig(20)) { SearchMedicamentSource(context, name,filter) }.flow.cachedIn(
             viewModelScope
         ).asLiveData()
 

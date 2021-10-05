@@ -35,24 +35,29 @@ public class SharedPreference {
         editor.putBoolean("target", target);
         editor.apply();
     }
-    public void setLocation(String lat, String longt) {
+
+    public void setLocation(String lat, String longt, String name) {
         editor = prefs.edit();
         editor.putString("lat", lat);
         editor.putString("long", longt);
+        editor.putString("name", name);
         editor.apply();
     }
 
     public Location getLocation() {
-        return new Location(prefs.getString("lat", "en"), prefs.getString("long", "en"));
+        return new Location(prefs.getString("lat", "en"), prefs.getString("long", "en"), prefs.getString("name", "Location"));
     }
+
     public void setHasLocation(boolean hasLang) {
         editor = prefs.edit();
         editor.putBoolean("hasLocation", hasLang);
         editor.apply();
     }
+
     public boolean getHasLocation() {
         return prefs.getBoolean("hasLocation", false);
     }
+
     public boolean getTarget() {
         return prefs.getBoolean("target", false);
     }

@@ -39,7 +39,6 @@ private const val ARG_PARAM2 = "param2"
 
 class InfoBranchFragment : Fragment() {
     lateinit var binding: FragmentInfoBranchBinding
-
     var name = ""
     private var param1: String? = null
     private var param2: String? = null
@@ -68,8 +67,7 @@ class InfoBranchFragment : Fragment() {
                     Functions().getWorkingTime(branch.start_time, branch.end_time)
                 binding.map.setOnClickListener {
                     var i = Intent(requireContext(), PharmacyMapActivity::class.java)
-                    i.putExtra("lat", branch.latitude)
-                    i.putExtra("long", branch.longitude)
+                    i.putExtra("lat", branch)
                     startActivity(i)
                 }
                 binding.phone.setOnClickListener {

@@ -50,16 +50,27 @@ class MapActivity : AppCompatActivity() {
         mapView = findViewById<View>(R.id.map_userLocation) as MapView
         userLocationLayer = mapkit.createUserLocationLayer(mapView?.mapWindow!!)
         userLocationLayer.isHeadingEnabled = true;
-        getUserLocation()
+        var location = SharedPreference.getInstance(this).location
+        cameraMoveOn(location.long.toDouble(), location.lat.toDouble())
         val save_btn = findViewById<TextView>(R.id.save)
         val getCurrent_btn = findViewById<ImageView>(R.id.getCurrentLocation)
-
         save_btn.setOnClickListener {
             if (NetworkHelper(this).isNetworkConnected()) {
                 SharedPreference.getInstance(this).hasLocation = true
                 var a = mapView!!.mapWindow.map.cameraPosition.target
-                SharedPreference.getInstance(this)
-                    .setLocation("${a.latitude}", "${a.longitude}")
+                try {
+                    var name = Functions().getLocationName(
+                        this,
+                        a.latitude,
+                        a.longitude
+                    )
+                    SharedPreference.getInstance(this)
+                        .setLocation(
+                            "${a.latitude}", "${a.longitude}", name
+                        )
+                } catch (e: java.lang.Exception) {
+                    Toast.makeText(this, "Location Error", Toast.LENGTH_SHORT).show()
+                }
                 this.finish()
             } else {
                 Toast.makeText(
@@ -72,20 +83,18 @@ class MapActivity : AppCompatActivity() {
         getCurrent_btn.setOnClickListener {
             getUserLocation()
         }
-        mapkit.createLocationManager().requestSingleUpdate(object : LocationListener {
-            override fun onLocationUpdated(p0: com.yandex.mapkit.location.Location) {
-                mapView!!.map.move(
-                    CameraPosition(p0.position, 20.0f, 0.0f, 0.0f),
-                    Animation(Animation.Type.SMOOTH, 1.0F), null
-                )
-                Log.d("TagCheck", "getUserLocation121212 " + p0.position.longitude)
-                Log.d("TagCheck", "getUserLocation121212 " + p0.position.latitude)
-            }
-
-            override fun onLocationStatusUpdated(locationStatus: LocationStatus) {
-                Log.d("TAG", "getUserLocation121212:status update ")
-            }
-        })
+//        mapkit.createLocationManager().requestSingleUpdate(object : LocationListener {
+//            override fun onLocationUpdated(p0: com.yandex.mapkit.location.Location) {
+//                mapView!!.map.move(
+//                    CameraPosition(p0.position, 20.0f, 0.0f, 0.0f),
+//                    Animation(Animation.Type.SMOOTH, 1.0F), null
+//                )
+//            }
+//
+//            override fun onLocationStatusUpdated(locationStatus: LocationStatus) {
+//                Log.d("TAG", "getUserLocation121212:status update ")
+//            }
+//        })
     }
 
     private fun getUserLocation() {
@@ -96,17 +105,25 @@ class MapActivity : AppCompatActivity() {
                 count = 0
                 fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                     Log.d(TAG, "getUserLocation121212:  $location")
-                    if (location != null && location.latitude > 0 && (location.longitude) > 0) {
-                        SharedPreference.getInstance(this)
-                            .setLocation(
-                                location.latitude.toString(),
-                                location.longitude.toString()
+                    try {
+                        if (location != null && location.latitude > 0 && (location.longitude) > 0) {
+                            var name = Functions().getLocationName(
+                                this,
+                                location.latitude,
+                                location.longitude
                             )
-                        SharedPreference.getInstance(this).hasLocation = true
-                        cameraMoveOn(location.latitude, location.longitude)
-                    } else {
-                        Log.d(TAG, "getUserLocatio:  null or min then 0")
-                        setDefoultLocation()
+                            SharedPreference.getInstance(this)
+                                .setLocation(
+                                    "${location.latitude}", "${location.longitude}", name
+                                )
+                            SharedPreference.getInstance(this).hasLocation = true
+                            cameraMoveOn(location.latitude, location.longitude)
+                        } else {
+                            Log.d(TAG, "getUserLocatio:  null or min then 0")
+                            setDefoultLocation()
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -134,17 +151,23 @@ class MapActivity : AppCompatActivity() {
 
     private fun setDefoultLocation() {
         Log.d(TAG, "getUserLocation121212:  default location get")
-        SharedPreference.getInstance(this).setLocation("${41.311081}", "${69.240562}")
+        var lat = 41.311081
+        var long = 69.240562
+        var name = Functions().getLocationName(
+            this,
+            lat,
+            long
+        )
+        SharedPreference.getInstance(this).setLocation("$lat", "$long", name)
         SharedPreference.getInstance(this).hasLocation = (true)
         cameraMoveOn(41.311081, 69.240562)
     }
-
 
     fun cameraMoveOn(lat: Double, long: Double) {
         try {
             mapView!!.map.move(
                 CameraPosition(
-                    Point(lat, long), 14.0f, 0.0f, 0.0f
+                    Point(lat, long), 15.0f, 0.0f, 0.0f
                 ),
                 Animation(Animation.Type.SMOOTH, 2F), null
             )

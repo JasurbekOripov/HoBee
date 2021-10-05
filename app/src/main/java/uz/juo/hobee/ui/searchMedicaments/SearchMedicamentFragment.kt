@@ -1,30 +1,24 @@
 package uz.juo.hobee.ui.searchMedicaments
 
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import android.view.animation.AnimationUtils
-import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ProgressBar
-import android.widget.SearchView
-import androidx.core.view.marginBottom
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.github.ybq.android.spinkit.sprite.Sprite
 import com.github.ybq.android.spinkit.style.FadingCircle
 import kotlinx.coroutines.launch
 import uz.juo.hobee.MainActivity
-import uz.juo.hobee.R
 import uz.juo.hobee.adapters.SearchMedicamentAdapter
 import uz.juo.hobee.databinding.FragmentSearchBinding
 import uz.juo.hobee.models.ItemX
@@ -32,6 +26,14 @@ import uz.juo.hobee.room.AppDataBase
 import uz.juo.hobee.room.entity.FavoritesEntity
 import uz.juo.hobee.utils.SharedPreference
 import uz.juo.hobee.viewmodel.search_medicament.SearchViewModel
+import java.lang.Exception
+import android.widget.LinearLayout
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import uz.juo.hobee.R
+import uz.juo.hobee.adapters.ManufacturerAdapter
+import uz.juo.hobee.models.Item
+import uz.juo.hobee.viewmodel.manufacturer.ManufacturerViewModel
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -39,9 +41,13 @@ private const val ARG_PARAM2 = "param2"
 
 class SearchMedicamentFragment : Fragment() {
     lateinit var binding: FragmentSearchBinding
+    lateinit var manufacturerViewModel: ManufacturerViewModel
     lateinit var searchViewMoedl: SearchViewModel
     lateinit var adapter: SearchMedicamentAdapter
+    lateinit var manufavturerAdapter: ManufacturerAdapter
     var name = ""
+    var m = ""
+    var position = 0
     private var param1: String? = null
     private var param2: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +65,7 @@ class SearchMedicamentFragment : Fragment() {
     ): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         searchViewMoedl = ViewModelProvider(this)[SearchViewModel::class.java]
+        manufacturerViewModel = ViewModelProvider(this)[ManufacturerViewModel::class.java]
         loadData()
         val progressBar = binding.spinKit as ProgressBar
         val doubleBounce: Sprite = FadingCircle()
@@ -67,12 +74,68 @@ class SearchMedicamentFragment : Fragment() {
             loadData()
             binding.refresh.isRefreshing = false
         }
-
+        binding.filter.setOnClickListener {
+            showBottomSheet()
+        }
         return binding.root
     }
 
+    private fun showBottomSheet() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.manufacturer_bottom_sheet)
+        val rv = bottomSheetDialog.findViewById<RecyclerView>(R.id.rv)
+        val search = bottomSheetDialog.findViewById<EditText>(R.id.searchManufacturer)
+        search?.setText(m)
+        manufavturerAdapter =
+            ManufacturerAdapter(requireContext(), m, object : ManufacturerAdapter.setOnClick {
+                override fun itemClicked(m1: String, position1: Int) {
+                    position = position1
+                    m = m1
+                    binding.filterStatus.visibility = View.VISIBLE
+                    searchViewMoedl.medicaments(requireContext(), name, m)
+                        .observe(viewLifecycleOwner, Observer {
+                            lifecycleScope.launch {
+                                adapter.submitData(it)
+                                rv?.scrollToPosition(position)
+                            }
+                        })
+                    bottomSheetDialog.cancel()
+                }
+            })
+        search?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                m = p0.toString()
+                try {
+                    manufacturerViewModel.manufacturers(m).observe(viewLifecycleOwner, {
+                        lifecycleScope.launch {
+                            manufavturerAdapter.submitData(it)
+                        }
+                    })
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+        manufacturerViewModel.manufacturers(m).observe(viewLifecycleOwner, {
+            lifecycleScope.launch {
+                manufavturerAdapter.submitData(it)
+            }
+        })
+        rv?.adapter = manufavturerAdapter
+        bottomSheetDialog.show()
+    }
+
     private fun loadData() {
-        adapter = SearchMedicamentAdapter(requireContext(), object : SearchMedicamentAdapter.setOnClick {
+        adapter =
+            SearchMedicamentAdapter(requireContext(), object : SearchMedicamentAdapter.setOnClick {
                 override fun itemClick(mediacament: ItemX, position: Int) {
                     var bundle = Bundle()
                     bundle.putInt("param1", mediacament.id)
@@ -99,7 +162,6 @@ class SearchMedicamentFragment : Fragment() {
                     }
                 }
             })
-
         binding.search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -111,16 +173,19 @@ class SearchMedicamentFragment : Fragment() {
 
             override fun afterTextChanged(p0: Editable?) {
                 name = p0.toString()
-                searchViewMoedl.medicaments(requireContext(), name)
-                    .observe(viewLifecycleOwner, Observer {
-                        lifecycleScope.launch {
-                            adapter.submitData(it)
-                        }
-                    })
+                try {
+                    searchViewMoedl.medicaments(requireContext(), name, m)
+                        .observe(viewLifecycleOwner, Observer {
+                            lifecycleScope.launch {
+                                adapter.submitData(it)
+                            }
+                        })
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                }
             }
         })
-
-        searchViewMoedl.medicaments(requireContext(), name).observe(viewLifecycleOwner, Observer {
+        searchViewMoedl.medicaments(requireContext(), name, m).observe(viewLifecycleOwner, {
             lifecycleScope.launch {
                 adapter.submitData(it)
             }
@@ -128,9 +193,13 @@ class SearchMedicamentFragment : Fragment() {
         binding.rv.adapter = adapter
     }
 
-
     override fun onResume() {
         super.onResume()
+        if (m != "") {
+            binding.filterStatus.visibility = View.VISIBLE
+        } else {
+            binding.filterStatus.visibility = View.INVISIBLE
+        }
         (activity as MainActivity).hideBottomBar()
     }
 
@@ -138,8 +207,8 @@ class SearchMedicamentFragment : Fragment() {
         super.onDestroy()
         (activity as MainActivity).showBottomBar()
     }
-    companion object {
 
+    companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             SearchMedicamentFragment().apply {

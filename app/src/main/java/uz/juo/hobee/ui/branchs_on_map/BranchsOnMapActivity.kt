@@ -3,6 +3,7 @@ package uz.juo.hobee.ui.branchs_on_map
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -20,17 +21,14 @@ import com.yandex.runtime.ui_view.ViewProvider
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.PagingData
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import uz.juo.hobee.models.ItemMedIdPrice
+import uz.juo.hobee.retrofit.ApiClient
 import uz.juo.hobee.utils.NetworkHelper
 import uz.juo.hobee.utils.SharedPreference
 import uz.juo.hobee.viewmodel.branches_for_map.BranchesForMapViewModel
 import java.lang.Exception
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -39,9 +37,8 @@ class BranchsOnMapActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var mapView: MapView? = null
     lateinit var userLocationLayer: UserLocationLayer
+    var list = ArrayList<ItemMedIdPrice>()
     lateinit var viewModel: BranchesForMapViewModel
-    var lat = 59.945933
-    var long = 30.320045
 
 
     @SuppressLint("ResourceAsColor")
@@ -54,37 +51,67 @@ class BranchsOnMapActivity : AppCompatActivity() {
         mapView = findViewById<View>(R.id.branchs_map) as MapView
         userLocationLayer = mapkit.createUserLocationLayer(mapView?.mapWindow!!)
         userLocationLayer.isHeadingEnabled = true;
-//        getData()
-        setTv("5600")
-    }
-
-    @SuppressLint("SetTextI18n", "UseCompatLoadingForDrawables")
-    private fun setTv(text: String) {
-        val textView = TextView(this)
-        val params = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        textView.background = getDrawable(R.drawable.toolbar_back)
-        textView.layoutParams = params
-        textView.setPadding(10, 5, 10, 5)
-        textView.setTextColor(Color.WHITE)
-        textView.text = "Branch Price"
-        val viewProvider = ViewProvider(textView)
         var location = SharedPreference.getInstance(this).location
-        val viewPlacemark: PlacemarkMapObject =
-            mapView!!.map.mapObjects.addPlacemark(
-                Point(
-                    location.long.toDouble(),
-                    location.lat.toDouble()
-                ), viewProvider
-            )
+        var id = intent.getIntExtra("id", 1)
         cameraMoveOn(
             location.long.toDouble(),
             location.lat.toDouble()
         )
-        viewProvider.snapshot()
-        viewPlacemark.setView(viewProvider)
+        try {
+            lifecycleScope.launch {
+                list = ApiClient.apiService.branchPriceForMap(
+                    location.lat,
+                    location.long,
+                    id
+                ).items as ArrayList<ItemMedIdPrice>
+                for (i in list) {
+                    setTv(i)
+                }
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Data Not Found", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    @SuppressLint("SetTextI18n", "UseCompatLoadingForDrawables")
+    private fun setTv(data: ItemMedIdPrice) {
+        if (data.latitude != null && data.longitude != null) {
+            val textView = TextView(this)
+            val params = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            textView.background = getDrawable(R.drawable.price_tv_back)
+            textView.layoutParams = params
+            textView.id = data.id
+            textView.setPadding(15, 7, 15, 7)
+            textView.setTextColor(Color.WHITE)
+            textView.setTypeface(null, Typeface.BOLD);
+            textView.text = "${data.price.subSequence(0, data.price.indexOf("."))} сўм"
+            val viewProvider = ViewProvider(textView)
+            var id = data.id
+            val viewPlacemark: PlacemarkMapObject =
+                mapView!!.map.mapObjects.addPlacemark(
+                    Point(
+                        data.latitude.toString().toDouble(),
+                        data.longitude.toString().toDouble()
+                    ), viewProvider
+                )
+            viewProvider.snapshot()
+            viewPlacemark.setView(viewProvider)
+//            viewPlacemark.addTapListener { p0, p1 ->
+//                if (list.size > 0) {
+//                    for (i in list) {
+//                        if (i.latitude == p1.latitude && i.longitude == p1.longitude) {
+//                            Toast.makeText(this, i.id, Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
+//                }
+//                true
+//            }
+        } else {
+            Toast.makeText(this, "No Location at ${data.id}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     @SuppressLint("UseRequireInsteadOfGet")
@@ -97,23 +124,6 @@ class BranchsOnMapActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        checkInternet()
-    }
-
-    private fun getData() {
-        lifecycleScope.launch {
-            var sh = SharedPreference.getInstance(this@BranchsOnMapActivity)
-            viewModel =
-                ViewModelProvider(this@BranchsOnMapActivity)[BranchesForMapViewModel::class.java]
-//            viewModel.branches(sh.lang.toInt(), sh.location.lat, sh.location.long)
-//                .observe(this@BranchsOnMapActivity, {
-//                })
-
-
-        }
-    }
 
     fun cameraMoveOn(lat: Double, long: Double) {
         try {
@@ -140,4 +150,5 @@ class BranchsOnMapActivity : AppCompatActivity() {
         MapKitFactory.getInstance().onStart()
         mapView!!.onStart()
     }
+
 }

@@ -1,18 +1,12 @@
 package uz.juo.hobee.ui.info_viewpager
 
-import android.Manifest
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
@@ -20,21 +14,11 @@ import androidx.lifecycle.lifecycleScope
 import com.github.ybq.android.spinkit.sprite.Sprite
 import com.github.ybq.android.spinkit.style.FadingCircle
 import com.google.android.material.snackbar.Snackbar
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.coroutines.launch
 import uz.juo.hobee.MainActivity
-import uz.juo.hobee.R
 import uz.juo.hobee.adapters.BranchesByIdAdapter
 import uz.juo.hobee.databinding.FragmentInfoViewPagerBinding
 import uz.juo.hobee.models.ItemMedIdPrice
-import uz.juo.hobee.retrofit.ApiClient
-import uz.juo.hobee.room.AppDataBase
-import uz.juo.hobee.room.entity.FavoritesEntity
 import uz.juo.hobee.ui.location.PharmacyMapActivity
 import uz.juo.hobee.utils.*
 import uz.juo.hobee.viewmodel.branch_by_id_map.BranchesByIdViewModel
@@ -82,7 +66,6 @@ class InfoViewPagerFragment : Fragment() {
         if (NetworkHelper(requireContext()).isNetworkConnected()) {
             hideLoading()
             val location = SharedPreference.getInstance(activity?.applicationContext).location
-
             branchbyMap = ViewModelProvider(this)[BranchesByIdViewModel::class.java]
             adapter = BranchesByIdAdapter(object : BranchesByIdAdapter.setOnClick {
                 override fun itemClicked(branch: ItemMedIdPrice, position: Int) {
@@ -108,7 +91,6 @@ class InfoViewPagerFragment : Fragment() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-
                 }
             })
             try {
@@ -147,7 +129,7 @@ class InfoViewPagerFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         pos = SharedPreference.getInstance(requireContext()).lang.toInt()
-        loadData()
+//        loadData()
 //        (activity as MainActivity).hideBottomBar()
     }
 
