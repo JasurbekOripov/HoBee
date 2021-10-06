@@ -20,4 +20,8 @@
     </style>
     <style name="Theme.HoBee.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.HoBee.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="MyTransparentBottomSheetDialogTheme" parent="Theme.AppCompat.Light">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
+    </style>
 </resources>

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.graphics.Color
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -21,6 +22,7 @@ import com.yandex.runtime.ui_view.ViewProvider
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +43,7 @@ import java.lang.Exception
 import kotlin.collections.ArrayList
 
 
+@RequiresApi(Build.VERSION_CODES.M)
 class BranchsOnMapActivity : AppCompatActivity() {
     private lateinit var helper: NetworkHelper
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -79,8 +82,12 @@ class BranchsOnMapActivity : AppCompatActivity() {
                             for (i in list) {
                                 setTv(i)
                             }
-                        }else{
-                            Toast.makeText(this@BranchsOnMapActivity, "Data not Found", Toast.LENGTH_SHORT)
+                        } else {
+                            Toast.makeText(
+                                this@BranchsOnMapActivity,
+                                "Data not Found",
+                                Toast.LENGTH_SHORT
+                            )
                                 .show()
                         }
                     }
@@ -107,11 +114,13 @@ class BranchsOnMapActivity : AppCompatActivity() {
             textView.background = getDrawable(R.drawable.price_tv_back)
             textView.layoutParams = params
             textView.id = data.branch_id
+            textView.isClickable = true
             textView.setPadding(15, 7, 15, 7)
             textView.setTextColor(Color.WHITE)
             textView.setTypeface(null, Typeface.BOLD);
             textView.text = "${data.price.subSequence(0, data.price.indexOf("."))} сўм"
             val viewProvider = ViewProvider(textView)
+
             val viewPlacemark: PlacemarkMapObject =
                 mapView!!.map.mapObjects.addPlacemark(
                     Point(
@@ -121,16 +130,21 @@ class BranchsOnMapActivity : AppCompatActivity() {
                 )
             viewProvider.snapshot()
             viewPlacemark.setView(viewProvider)
-//            viewPlacemark.addTapListener { p0, p1 ->
-//                if (list.size > 0) {
-//                    for (i in list) {
-//                        if (i.latitude == p1.latitude && i.longitude == p1.longitude) {
-//                            Toast.makeText(this, i.id, Toast.LENGTH_SHORT).show()
-//                        }
-//                    }
-//                }
-//                true
-//            }
+            textView.setOnClickListener {
+                Toast.makeText(this, " text view clicked${textView.id}", Toast.LENGTH_SHORT).show()
+            }
+
+            View.OnClickListener { v ->
+                Toast.makeText(
+                    v.context, "View listener " + v.tag,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            viewPlacemark.addTapListener { p0, p1 ->
+
+                Toast.makeText(this, "yandex listener ${ p1.longitude.toString() }", Toast.LENGTH_SHORT).show()
+                true
+            }
         } else {
             Toast.makeText(this, "No Location at ${data.branch_id}", Toast.LENGTH_SHORT).show()
         }
@@ -172,5 +186,6 @@ class BranchsOnMapActivity : AppCompatActivity() {
         MapKitFactory.getInstance().onStart()
         mapView!!.onStart()
     }
+
 
 }

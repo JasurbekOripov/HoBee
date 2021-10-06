@@ -15,6 +15,8 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.text.TextPaint
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -69,12 +71,15 @@ class PharmacyMapActivity : AppCompatActivity() {
         )
         textView.background = getDrawable(R.drawable.price_tv_back)
         textView.layoutParams = params
+        textView.text = data.name
+//        if (data.name.length > 20) {
+//            textView.ellipsize = TextUtils.TruncateAt.END
+//        }
         textView.setPadding(15, 7, 15, 7)
         textView.setTextColor(Color.WHITE)
         textView.setTypeface(null, Typeface.BOLD);
-        textView.text = data.name
         val viewProvider = ViewProvider(textView)
-        if (data.latitude != null && data.longitude != null){
+        if (data.latitude != null && data.longitude != null) {
             val viewPlacemark: PlacemarkMapObject =
                 mapView!!.map.mapObjects.addPlacemark(
                     Point(
@@ -88,7 +93,7 @@ class PharmacyMapActivity : AppCompatActivity() {
                 cameraMoveOn(data.latitude as Double, data.longitude as Double)
             }
             cameraMoveOn(data.latitude as Double, data.longitude as Double)
-        }else{
+        } else {
             Toast.makeText(this, "Location not found", Toast.LENGTH_SHORT).show()
         }
     }

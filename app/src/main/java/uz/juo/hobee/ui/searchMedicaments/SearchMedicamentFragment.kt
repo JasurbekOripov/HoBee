@@ -78,7 +78,7 @@ class SearchMedicamentFragment : Fragment() {
     }
 
     private fun showBottomSheet() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        val bottomSheetDialog = BottomSheetDialog(requireContext(),R.style.MyTransparentBottomSheetDialogTheme)
         bottomSheetDialog.setContentView(R.layout.manufacturer_bottom_sheet)
         val rv = bottomSheetDialog.findViewById<RecyclerView>(R.id.rv)
         val search = bottomSheetDialog.findViewById<EditText>(R.id.searchManufacturer)
