@@ -37,7 +37,7 @@ class InfoViewPagerFragment : Fragment() {
     lateinit var adapter: BranchesByIdAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pos = SharedPreference.getInstance(requireContext()).lang.toInt()
+        pos = SharedPreference.getInstance(requireContext()).medId.toInt()
         arguments?.let {
 //            param1 = it.getInt(ARG_PARAM1)
             position = it.getString(ARG_PARAM2)
@@ -73,18 +73,25 @@ class InfoViewPagerFragment : Fragment() {
                 }
 
                 override fun itemPhoneClicked(branch: ItemMedIdPrice, position: Int) {
-                    val intent = Intent(Intent.ACTION_DIAL)
-                    intent.data = Uri.parse("tel:" + branch.phone)
-                    startActivity(intent)
+                    if (branch.phone != "") {
+                        val intent = Intent(Intent.ACTION_DIAL)
+                        intent.data = Uri.parse("tel:" + branch.phone)
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "Phone Number not found",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
 
                 override fun itemMapClicked(branch: ItemMedIdPrice, position: Int) {
                     var i = Intent(requireContext(), PharmacyMapActivity::class.java)
-                    try {
-                        i.putExtra("lat", branch.latitude as Double)
-                        i.putExtra("long", branch.longitude as Double)
+                    if (branch.latitude != null && branch.longitude != null) {
+                        i.putExtra("lat", branch)
                         startActivity(i)
-                    } catch (e: Exception) {
+                    } else {
                         Toast.makeText(
                             requireContext(),
                             "No Location at this Pharmacy",
@@ -104,7 +111,6 @@ class InfoViewPagerFragment : Fragment() {
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
             }
-
         } else {
             view?.let {
                 Snackbar.make(it, "No Internet connection", Snackbar.LENGTH_LONG)
@@ -128,7 +134,7 @@ class InfoViewPagerFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        pos = SharedPreference.getInstance(requireContext()).lang.toInt()
+        pos = SharedPreference.getInstance(requireContext()).medId.toInt()
 //        loadData()
 //        (activity as MainActivity).hideBottomBar()
     }
@@ -137,7 +143,6 @@ class InfoViewPagerFragment : Fragment() {
         super.onDestroy()
         (activity as MainActivity).showBottomBar()
     }
-
 
     companion object {
         @JvmStatic

@@ -3,7 +3,6 @@ package uz.juo.hobee.ui.searchMedicaments
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -27,12 +26,10 @@ import uz.juo.hobee.room.entity.FavoritesEntity
 import uz.juo.hobee.utils.SharedPreference
 import uz.juo.hobee.viewmodel.search_medicament.SearchViewModel
 import java.lang.Exception
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import uz.juo.hobee.R
 import uz.juo.hobee.adapters.ManufacturerAdapter
-import uz.juo.hobee.models.Item
 import uz.juo.hobee.viewmodel.manufacturer.ManufacturerViewModel
 
 private const val ARG_PARAM1 = "param1"
@@ -137,10 +134,12 @@ class SearchMedicamentFragment : Fragment() {
         adapter =
             SearchMedicamentAdapter(requireContext(), object : SearchMedicamentAdapter.setOnClick {
                 override fun itemClick(mediacament: ItemX, position: Int) {
-                    var bundle = Bundle()
-                    bundle.putInt("param1", mediacament.id)
-                    SharedPreference.getInstance(requireContext()).lang = mediacament.id.toString()
-                    findNavController().navigate(R.id.infoMedicamentFragment, bundle)
+//                    var bundle = Bundle()
+//                    bundle.putInt("param1", mediacament.id)
+                    SharedPreference.getInstance(requireContext()).medId = mediacament.id.toString()
+                    findNavController().navigate(R.id.infoMedicamentFragment,
+//                        bundle
+                    )
                 }
 
                 override fun itemLikeClick(mediacament: ItemX, position: Int, state: Boolean) {
@@ -195,6 +194,7 @@ class SearchMedicamentFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        loadData()
         if (m != "") {
             binding.filterStatus.visibility = View.VISIBLE
         } else {

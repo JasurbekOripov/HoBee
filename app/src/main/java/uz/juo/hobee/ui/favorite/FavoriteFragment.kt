@@ -48,7 +48,7 @@ class FavoriteFragment : Fragment() {
             object : FavoriteAdapter.itemOnCLick {
                 override fun itemClick(mediacament: FavoritesEntity, position: Int) {
                     var bundle = Bundle()
-                    SharedPreference.getInstance(requireContext()).lang = mediacament.id.toString()
+                    SharedPreference.getInstance(requireContext()).medId = mediacament.id.toString()
                     bundle.putInt("param1", mediacament.id)
                     findNavController(this@FavoriteFragment).navigate(
                         R.id.infoMedicamentFragment,

@@ -51,7 +51,11 @@ class MapActivity : AppCompatActivity() {
         userLocationLayer = mapkit.createUserLocationLayer(mapView?.mapWindow!!)
         userLocationLayer.isHeadingEnabled = true;
         var location = SharedPreference.getInstance(this).location
-        cameraMoveOn(location.long.toDouble(), location.lat.toDouble())
+        try {
+            cameraMoveOn(location.long.toDouble(), location.lat.toDouble())
+        }catch (e:java.lang.Exception){
+
+        }
         val save_btn = findViewById<TextView>(R.id.save)
         val getCurrent_btn = findViewById<ImageView>(R.id.getCurrentLocation)
         save_btn.setOnClickListener {
@@ -120,7 +124,7 @@ class MapActivity : AppCompatActivity() {
                             cameraMoveOn(location.latitude, location.longitude)
                         } else {
                             Log.d(TAG, "getUserLocatio:  null or min then 0")
-                            setDefoultLocation()
+//                            setDefoultLocation()
                         }
                     } catch (e: Exception) {
                         Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()

@@ -21,6 +21,7 @@ import uz.juo.hobee.R
 import uz.juo.hobee.adapters.BranchInfoAdapter
 import uz.juo.hobee.databinding.FragmentInfoBranchBinding
 import uz.juo.hobee.models.Item
+import uz.juo.hobee.models.ItemMedIdPrice
 import uz.juo.hobee.models.ItemX
 import uz.juo.hobee.retrofit.ApiClient
 import uz.juo.hobee.retrofit.ApiService
@@ -67,7 +68,20 @@ class InfoBranchFragment : Fragment() {
                     Functions().getWorkingTime(branch.start_time, branch.end_time)
                 binding.map.setOnClickListener {
                     var i = Intent(requireContext(), PharmacyMapActivity::class.java)
-                    i.putExtra("lat", branch)
+                    i.putExtra(
+                        "lat",
+                        ItemMedIdPrice(
+                            branch.address,
+                            branch.distance,
+                            branch.end_time,
+                            branch.id,
+                            branch.latitude,
+                            branch.longitude,
+                            branch.name, branch.phone,
+                            "",
+                            branch.start_time
+                        )
+                    )
                     startActivity(i)
                 }
                 binding.phone.setOnClickListener {
@@ -102,7 +116,7 @@ class InfoBranchFragment : Fragment() {
             override fun itemClick(mediacament: ItemX, position: Int) {
                 var bundle = Bundle()
                 bundle.putInt("param1", mediacament.id)
-                SharedPreference.getInstance(requireContext()).lang = mediacament.id.toString()
+                SharedPreference.getInstance(requireContext()).medId = mediacament.id.toString()
                 findNavController().navigate(R.id.infoMedicamentFragment, bundle)
             }
 

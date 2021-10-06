@@ -40,6 +40,7 @@ import uz.juo.hobee.utils.SharedPreference
 import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.runtime.ui_view.ViewProvider
 import uz.juo.hobee.models.Item
+import uz.juo.hobee.models.ItemMedIdPrice
 import java.lang.Exception
 
 
@@ -47,7 +48,7 @@ class PharmacyMapActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var mapView: MapView? = null
     lateinit var userLocationLayer: UserLocationLayer
-    var data = Item()
+    var data = ItemMedIdPrice()
 
     @SuppressLint("UseCompatLoadingForDrawables", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +60,7 @@ class PharmacyMapActivity : AppCompatActivity() {
         userLocationLayer = mapkit.createUserLocationLayer(mapView?.mapWindow!!)
         userLocationLayer.isHeadingEnabled = true
 
-        data = intent.getSerializableExtra("lat") as Item
+        data = intent.getSerializableExtra("lat") as ItemMedIdPrice
         val getCurrent_btn = findViewById<ImageView>(R.id.getCurrentLocationPharmacy)
         val textView = TextView(this)
         val params = ViewGroup.LayoutParams(
@@ -73,19 +74,23 @@ class PharmacyMapActivity : AppCompatActivity() {
         textView.setTypeface(null, Typeface.BOLD);
         textView.text = data.name
         val viewProvider = ViewProvider(textView)
-        val viewPlacemark: PlacemarkMapObject =
-            mapView!!.map.mapObjects.addPlacemark(
-                Point(
-                    data.latitude.toString().toDouble(),
-                    data.longitude.toString().toDouble()
-                ), viewProvider
-            )
-        viewProvider.snapshot()
-        viewPlacemark.setView(viewProvider)
-        getCurrent_btn.setOnClickListener {
-            cameraMoveOn(data.latitude, data.longitude)
+        if (data.latitude != null && data.longitude != null){
+            val viewPlacemark: PlacemarkMapObject =
+                mapView!!.map.mapObjects.addPlacemark(
+                    Point(
+                        data.latitude.toString().toDouble(),
+                        data.longitude.toString().toDouble()
+                    ), viewProvider
+                )
+            viewProvider.snapshot()
+            viewPlacemark.setView(viewProvider)
+            getCurrent_btn.setOnClickListener {
+                cameraMoveOn(data.latitude as Double, data.longitude as Double)
+            }
+            cameraMoveOn(data.latitude as Double, data.longitude as Double)
+        }else{
+            Toast.makeText(this, "Location not found", Toast.LENGTH_SHORT).show()
         }
-        cameraMoveOn(data.latitude, data.longitude)
     }
 
     private fun cameraMoveOn(lat: Double, long: Double) {

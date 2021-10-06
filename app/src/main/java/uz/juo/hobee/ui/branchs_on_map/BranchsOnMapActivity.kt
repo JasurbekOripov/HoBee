@@ -22,8 +22,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.awaitResponse
+import uz.juo.hobee.models.BranchForMap
+import uz.juo.hobee.models.BranchesByMedIdPrice
 import uz.juo.hobee.models.ItemMedIdPrice
+import uz.juo.hobee.models.ItemXXX
 import uz.juo.hobee.retrofit.ApiClient
 import uz.juo.hobee.utils.NetworkHelper
 import uz.juo.hobee.utils.SharedPreference
@@ -37,7 +46,7 @@ class BranchsOnMapActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var mapView: MapView? = null
     lateinit var userLocationLayer: UserLocationLayer
-    var list = ArrayList<ItemMedIdPrice>()
+    var list = ArrayList<ItemXXX>()
     lateinit var viewModel: BranchesForMapViewModel
 
 
@@ -58,23 +67,37 @@ class BranchsOnMapActivity : AppCompatActivity() {
             location.lat.toDouble()
         )
         try {
-            lifecycleScope.launch {
-                list = ApiClient.apiService.branchPriceForMap(
-                    location.lat,
-                    location.long,
-                    id
-                ).items as ArrayList<ItemMedIdPrice>
-                for (i in list) {
-                    setTv(i)
-                }
+            CoroutineScope(Dispatchers.IO).launch {
+                val info = ApiClient.apiService.branchPriceForMap(location.lat, location.long, id)
+                info.enqueue(object : Callback<BranchForMap> {
+                    override fun onResponse(
+                        call: Call<BranchForMap>,
+                        response: Response<BranchForMap>
+                    ) {
+                        if (response.body()?.items != null) {
+                            list = response.body()?.items as ArrayList<ItemXXX>
+                            for (i in list) {
+                                setTv(i)
+                            }
+                        }else{
+                            Toast.makeText(this@BranchsOnMapActivity, "Data not Found", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<BranchForMap>, t: Throwable) {
+                        Toast.makeText(this@BranchsOnMapActivity, "Error", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                })
             }
         } catch (e: Exception) {
-            Toast.makeText(this, "Data Not Found", Toast.LENGTH_SHORT).show()
+            list = ArrayList()
         }
     }
 
     @SuppressLint("SetTextI18n", "UseCompatLoadingForDrawables")
-    private fun setTv(data: ItemMedIdPrice) {
+    private fun setTv(data: ItemXXX) {
         if (data.latitude != null && data.longitude != null) {
             val textView = TextView(this)
             val params = ViewGroup.LayoutParams(
@@ -83,13 +106,12 @@ class BranchsOnMapActivity : AppCompatActivity() {
             )
             textView.background = getDrawable(R.drawable.price_tv_back)
             textView.layoutParams = params
-            textView.id = data.id
+            textView.id = data.branch_id
             textView.setPadding(15, 7, 15, 7)
             textView.setTextColor(Color.WHITE)
             textView.setTypeface(null, Typeface.BOLD);
             textView.text = "${data.price.subSequence(0, data.price.indexOf("."))} сўм"
             val viewProvider = ViewProvider(textView)
-            var id = data.id
             val viewPlacemark: PlacemarkMapObject =
                 mapView!!.map.mapObjects.addPlacemark(
                     Point(
@@ -110,7 +132,7 @@ class BranchsOnMapActivity : AppCompatActivity() {
 //                true
 //            }
         } else {
-            Toast.makeText(this, "No Location at ${data.id}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No Location at ${data.branch_id}", Toast.LENGTH_SHORT).show()
         }
     }
 

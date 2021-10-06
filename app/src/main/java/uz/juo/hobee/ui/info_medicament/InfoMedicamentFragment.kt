@@ -50,7 +50,7 @@ class InfoMedicamentFragment : Fragment() {
 //            param2 = it.getString(ARG_PARAM2)
         }
         (activity as MainActivity).hideBottomBar()
-        pos = SharedPreference.getInstance(requireContext()).lang.toInt()
+        pos = SharedPreference.getInstance(requireContext()).medId.toInt()
     }
 
     override fun onCreateView(
@@ -62,7 +62,7 @@ class InfoMedicamentFragment : Fragment() {
         setData()
         binding.map.setOnClickListener {
             var i = Intent(requireContext(), BranchsOnMapActivity::class.java)
-            i.putExtra("id", SharedPreference.getInstance(requireContext()).lang.toInt())
+            i.putExtra("id", SharedPreference.getInstance(requireContext()).medId.toInt())
             startActivity(i)
         }
         binding.back.setOnClickListener {
@@ -132,7 +132,7 @@ class InfoMedicamentFragment : Fragment() {
     private fun checkLikable() {
         lifecycleScope.launch {
             var data =
-                ApiClient.apiService.getMedicamentById(SharedPreference.getInstance(requireContext()).lang.toInt())
+                ApiClient.apiService.getMedicamentById(SharedPreference.getInstance(requireContext()).medId.toInt())
             var likable = false
             for (i in Functions().getFavorite(requireContext())) {
                 if (i.id == data.id) {
@@ -189,7 +189,7 @@ class InfoMedicamentFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        pos = SharedPreference.getInstance(requireContext()).lang.toInt()
+        pos = SharedPreference.getInstance(requireContext()).medId.toInt()
 //        setData()
     }
 

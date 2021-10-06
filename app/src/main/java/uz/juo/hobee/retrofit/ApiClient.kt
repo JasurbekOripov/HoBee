@@ -3,6 +3,7 @@ package uz.juo.hobee.retrofit
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
@@ -21,7 +22,12 @@ object ApiClient {
 
         return Retrofit.Builder().baseUrl(BASE_URL)
             .client(okkHttpClient)
-            .addConverterFactory(GsonConverterFactory.create()).build()
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(
+                RxJava2CallAdapterFactory.create()
+            )
+            .build()
+
     }
 
     var apiService = getRetrofit().create(ApiService::class.java)

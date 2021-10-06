@@ -26,7 +26,9 @@ class BranchesByIdAdapter(var itemClick: setOnClick) :
             } else {
                 item.distance.text = Functions().kmConvertor(branch.distance)
             }
-            item.workingTime.text = Functions().getWorkingTime(branch.start_time, branch.end_time)
+            item.workingTime.text = Functions().getWorkingTime(branch.start_time.toString(),
+                branch.end_time.toString()
+            )
             item.root.setOnClickListener {
                 itemClick.itemClicked(branch, position)
             }

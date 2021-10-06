@@ -1,5 +1,7 @@
 package uz.juo.hobee.retrofit
 
+import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -70,11 +72,11 @@ interface ApiService {
     ): BranchesByMedIdPrice
 
     @GET("branches/medicament/map")
-    suspend fun branchPriceForMap(
+      fun branchPriceForMap(
         @Query("latitude") lat: String,
         @Query("longitude") long: String,
         @Query("medicament_id") id: Int
-    ): BranchesByMedIdPrice
+    ): Call<BranchForMap>
 
 
     @GET("branches")

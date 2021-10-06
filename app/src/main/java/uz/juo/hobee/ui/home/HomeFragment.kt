@@ -167,7 +167,7 @@ class HomeFragment : Fragment() {
             bestAdapter = HomeMediacamentAdapter(requireContext(), list,
                 object : HomeMediacamentAdapter.itemOnCLick {
                     override fun itemClick(mediacament: Medicament, position: Int) {
-                        SharedPreference.getInstance(requireContext()).lang =
+                        SharedPreference.getInstance(requireContext()).medId =
                             mediacament.id.toString()
                         findNavController().navigate(R.id.infoMedicamentFragment)
                     }
@@ -231,6 +231,9 @@ class HomeFragment : Fragment() {
     private fun checkInternet() {
         if (helper.isNetworkConnected()) {
             show()
+            lifecycleScope.launch {
+                getBestMed()
+            }
         } else {
             hide()
         }

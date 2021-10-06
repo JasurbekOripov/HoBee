@@ -20,13 +20,13 @@ public class SharedPreference {
         prefs = context.getSharedPreferences(getClass().getName(), Context.MODE_PRIVATE);
     }
 
-    public void setLang(String lang) {
+    public void setMedId(String lang) {
         editor = prefs.edit();
         editor.putString("lang", lang);
         editor.apply();
     }
 
-    public String getLang() {
+    public String getMedId() {
         return prefs.getString("lang", "1");
     }
 
