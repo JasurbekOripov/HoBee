@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -20,10 +22,15 @@ import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.runtime.ui_view.ViewProvider
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.yandex.mapkit.map.MapObject
+import com.yandex.mapkit.map.MapObjectTapListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,6 +38,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.awaitResponse
+import uz.juo.hobee.adapters.ManufacturerAdapter
 import uz.juo.hobee.models.BranchForMap
 import uz.juo.hobee.models.BranchesByMedIdPrice
 import uz.juo.hobee.models.ItemMedIdPrice
@@ -120,7 +128,6 @@ class BranchsOnMapActivity : AppCompatActivity() {
             textView.setTypeface(null, Typeface.BOLD);
             textView.text = "${data.price.subSequence(0, data.price.indexOf("."))} сўм"
             val viewProvider = ViewProvider(textView)
-
             val viewPlacemark: PlacemarkMapObject =
                 mapView!!.map.mapObjects.addPlacemark(
                     Point(
@@ -128,26 +135,28 @@ class BranchsOnMapActivity : AppCompatActivity() {
                         data.longitude.toString().toDouble()
                     ), viewProvider
                 )
+            viewPlacemark.userData = data.branch_name
             viewProvider.snapshot()
             viewPlacemark.setView(viewProvider)
-            textView.setOnClickListener {
-                Toast.makeText(this, " text view clicked${textView.id}", Toast.LENGTH_SHORT).show()
-            }
 
-            View.OnClickListener { v ->
-                Toast.makeText(
-                    v.context, "View listener " + v.tag,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            viewPlacemark.addTapListener { p0, p1 ->
-
-                Toast.makeText(this, "yandex listener ${ p1.longitude.toString() }", Toast.LENGTH_SHORT).show()
-                true
-            }
+            viewPlacemark.addTapListener(object : MapObjectTapListener {
+                override fun onMapObjectTap(p0: MapObject, p1: Point): Boolean {
+                    setBottomSheet()
+                    return true
+                }
+            })
         } else {
             Toast.makeText(this, "No Location at ${data.branch_id}", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun setBottomSheet() {
+        val bottomSheetDialog =
+            BottomSheetDialog(this, R.style.MyTransparentBottomSheetDialogTheme)
+        bottomSheetDialog.setContentView(R.layout.manufacturer_bottom_sheet)
+        val rv = bottomSheetDialog.findViewById<RecyclerView>(R.id.rv)
+        val search = bottomSheetDialog.findViewById<EditText>(R.id.searchManufacturer)
+        bottomSheetDialog.show()
     }
 
     @SuppressLint("UseRequireInsteadOfGet")
