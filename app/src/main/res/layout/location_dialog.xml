@@ -1,94 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/_265sdp"
     android:layout_height="wrap_content"
-    android:backgroundTint="#F6F6F6"
+    android:layout_gravity="center"
+    android:backgroundTint="@color/white"
     app:cardCornerRadius="@dimen/_8sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/_10sdp"
-        android:background="#F6F6F6"
-        android:padding="@dimen/_15sdp">
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/location_image"
-            android:layout_width="@dimen/_100sdp"
-            android:layout_height="@dimen/_100sdp"
-            android:layout_marginTop="@dimen/_30sdp"
-            android:src="@drawable/location_permission"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:src="@drawable/ic_location_permission"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginTop="@dimen/_10sdp" />
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_35sdp"
-            android:text="Allow permission"
-            android:textColor="#0B1E4A"
-            android:textSize="@dimen/_18sdp"
-            android:textStyle="italic|bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/location_image" />
 
         <TextView
             android:id="@+id/decription_permission"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center"
+            android:text="Please for using this app grant the \npermission and mark location"
+            android:textColor="#E6000000"
+            android:textSize="@dimen/_11sdp"
+            android:textStyle="italic"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/location_image" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
-            android:text="Please for using this app grant the\n permission and mark location"
-            android:textColor="#0B1E4A"
-            android:textSize="@dimen/_12sdp"
-            android:textStyle="italic|bold"
+            android:orientation="vertical"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/deny"
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:layout_marginRight="@dimen/_10sdp"
-            android:backgroundTint="#FF0000"
-            app:cardCornerRadius="10dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/grant"
-            app:layout_constraintTop_toBottomOf="@id/decription_permission">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="NO"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold" />
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/grant"
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:layout_marginLeft="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:backgroundTint="@color/hobee_green"
-            app:cardCornerRadius="10dp"
-            app:layout_constraintLeft_toRightOf="@id/deny"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/decription_permission">
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@color/hobee_grey3" />
+
             <TextView
+                android:id="@+id/grant"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:gravity="center"
-                android:text="OK"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold" />
-        </androidx.cardview.widget.CardView>
+                android:padding="@dimen/_5sdp"
+                android:text="Allow"
+                android:textColor="@color/main_blue2"
+                android:textSize="@dimen/_11sdp"
+                android:textStyle="italic" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@color/hobee_grey3" />
+
+            <TextView
+                android:id="@+id/deny"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center"
+                android:paddingTop="@dimen/_5sdp"
+                android:paddingBottom="@dimen/_15sdp"
+                android:text="Deny"
+                android:textColor="@color/main_blue2"
+                android:textSize="@dimen/_11sdp"
+                android:textStyle="italic" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

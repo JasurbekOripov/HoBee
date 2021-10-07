@@ -160,7 +160,7 @@ class HomeFragment : Fragment() {
             dialog.setCancelable(false)
             dialog.setContentView(R.layout.location_dialog)
             dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            val dialogBtn_cancel = dialog.findViewById(R.id.deny) as CardView
+            val dialogBtn_cancel = dialog.findViewById(R.id.deny) as TextView
             dialogBtn_cancel.setOnClickListener {
                 if (helper.isNetworkConnected()) {
                     try {
@@ -191,7 +191,7 @@ class HomeFragment : Fragment() {
                 }
 
             }
-            val dialogBtn_okay = dialog.findViewById(R.id.grant) as CardView
+            val dialogBtn_okay = dialog.findViewById(R.id.grant) as TextView
             dialogBtn_okay.setOnClickListener {
                 var i = Intent(requireContext(), MapActivity::class.java)
                 startActivity(i)

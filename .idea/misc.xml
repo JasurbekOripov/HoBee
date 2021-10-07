@@ -6,8 +6,11 @@
         <entry key="..\:/Users/7777/.gradle/caches/transforms-3/1f32e1a2627ee7417c8e63fffba2f220/transformed/appcompat-1.3.1/res/layout/support_simple_spinner_dropdown_item.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/branches_ic_pharmacy.xml" value="0.2169230769230769" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.2169230769230769" />
+        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/ic_curent_location.xml" value="0.2169230769230769" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/ic_filter.xml" value="0.2037037037037037" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2037037037037037" />
+        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/ic_location.xml" value="0.2169230769230769" />
+        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/ic_location_permission.xml" value="0.2169230769230769" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/price_tv_back.xml" value="0.2037037037037037" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/toolbar_back.xml" value="0.2037037037037037" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/activity_branchs_on_map.xml" value="0.20416666666666666" />
@@ -16,7 +19,7 @@
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/activity_pharmacy_map.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/activity_splash.xml" value="0.17255434782608695" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/best_mdeicaments_item.xml" value="0.3787610619469027" />
-        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/branch_info_bottom_sheet.xml" value="0.25" />
+        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/branch_info_bottom_sheet.xml" value="0.16" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/branch_rv_item.xml" value="0.67" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/fragment_branch.xml" value="0.33" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/fragment_favorite.xml" value="0.20416666666666666" />
@@ -28,7 +31,7 @@
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/fragment_view_pager.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/home_nearby_rv_item.xml" value="0.5" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/info_medicament_item.xml" value="0.22" />
-        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/location_dialog.xml" value="0.22" />
+        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/location_dialog.xml" value="0.2" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/manufacturer_bottom_sheet.xml" value="0.2" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/manufacturer_item.xml" value="0.2" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/view_pager_item.xml" value="0.20416666666666666" />
