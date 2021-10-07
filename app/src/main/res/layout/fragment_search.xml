@@ -43,7 +43,7 @@
                         android:background="@color/white"
                         android:drawableStart="@drawable/ic_baseline_search_24"
                         android:drawablePadding="@dimen/_5sdp"
-                        android:hint="Search"
+                        android:hint="Поиск"
                         android:paddingStart="@dimen/_5sdp"
                         android:paddingEnd="@dimen/_10sdp"
                         android:textColor="@color/black"

@@ -58,7 +58,7 @@
             android:background="@color/white"
             android:drawableLeft="@drawable/ic_baseline_search_24"
             android:drawablePadding="@dimen/_5sdp"
-            android:hint="search medicaments"
+            android:hint="Поиск лекарств"
             android:padding="@dimen/_5sdp"
             android:textSize="@dimen/_12sdp" />
     </androidx.cardview.widget.CardView>

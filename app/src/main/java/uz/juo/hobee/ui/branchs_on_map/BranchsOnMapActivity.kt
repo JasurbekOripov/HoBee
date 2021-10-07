@@ -173,7 +173,7 @@ class BranchsOnMapActivity : AppCompatActivity() {
         val branchDistanse = bottomSheetDialog.findViewById<TextView>(R.id.bsh_distance)
         val branchMap = bottomSheetDialog.findViewById<CardView>(R.id.bsh_location_btn)
         val branchCall = bottomSheetDialog.findViewById<CardView>(R.id.bsh_call_btn)
-
+        bottomSheetDialog.setCanceledOnTouchOutside(true)
         lifecycleScope.launch {
             var branch = ApiClient.apiService.getPharmacyById(id.branch_id)
             branchCall?.setOnClickListener {
@@ -211,8 +211,6 @@ class BranchsOnMapActivity : AppCompatActivity() {
                 bottomSheetDialog.cancel()
             }
         }
-
-
         bottomSheetDialog.show()
     }
 
