@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         navController = findNavController(R.id.my_nav_host_fragment)
         setupSmoothBottomMenu()
-        navController.navigate(R.id.homeFragment)
+//        navController.navigate(R.id.homeFragment12)
         binding.bottomNavBar.setOnItemSelectedListener {
             bottomCLick(it)
         }
@@ -41,13 +41,13 @@ class MainActivity : AppCompatActivity() {
     private fun bottomCLick(it: Int) {
         when (it) {
             0 -> {
-                while (R.id.homeFragment != navController.currentDestination?.id && navController.currentDestination?.id != null) {
+                while (R.id.homeFragment12 != navController.currentDestination?.id && navController.currentDestination?.id != null) {
                     navController.popBackStack()
                 }
             }
             1 -> {
                 if (R.id.favoriteFragment1 != navController.currentDestination?.id) {
-                    while (R.id.homeFragment != navController.currentDestination?.id && navController.currentDestination?.id != null) {
+                    while (R.id.homeFragment12 != navController.currentDestination?.id && navController.currentDestination?.id != null) {
                         navController.popBackStack()
                     }
                     navController.navigate(R.id.favoriteFragment1)
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             }
             2 -> {
                 if (R.id.branchsFragment != navController.currentDestination?.id) {
-                    while (R.id.homeFragment != navController.currentDestination?.id && navController.currentDestination?.id != null) {
+                    while (R.id.homeFragment12 != navController.currentDestination?.id && navController.currentDestination?.id != null) {
                         navController.popBackStack()
                     }
                     navController.navigate(R.id.branchFragment)
@@ -87,10 +87,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("RestrictedApi")
     override fun onBackPressed() {
         super.onBackPressed()
-//        if (navController.previousBackStackEntry?.destination?.id == R.id.homeFragment) {
-//            finish()
-//        } else
-        if (navController.currentDestination?.id == R.id.homeFragment) {
+        if (navController.currentDestination?.id == R.id.homeFragment12) {
             binding.bottomNavBar.itemActiveIndex = 0
         }
 
