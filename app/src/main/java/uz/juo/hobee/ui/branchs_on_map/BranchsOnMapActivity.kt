@@ -78,10 +78,6 @@ class BranchsOnMapActivity : AppCompatActivity() {
         try {
             var location = SharedPreference.getInstance(this).location
             var id = intent.getIntExtra("id", 1)
-            cameraMoveOn(
-                location.long.toDouble(),
-                location.lat.toDouble()
-            )
             CoroutineScope(Dispatchers.IO).launch {
                 val info = ApiClient.apiService.branchPriceForMap(location.lat, location.long, id)
                 info.enqueue(object : Callback<BranchForMap> {
@@ -90,6 +86,10 @@ class BranchsOnMapActivity : AppCompatActivity() {
                         response: Response<BranchForMap>
                     ) {
                         if (response.body()?.items != null) {
+                            cameraMoveOn(
+                                location.long.toDouble(),
+                                location.lat.toDouble()
+                            )
                             list = response.body()?.items as ArrayList<ItemXXX>
                             for (i in list) {
                                 setTv(i)
@@ -207,7 +207,6 @@ class BranchsOnMapActivity : AppCompatActivity() {
                     Uri.parse("geo:<" + id.latitude.toString() + ">,<" + id.longitude.toString() + ">?q=<" + id.latitude.toString() + ">,<" + id.longitude.toString() + ">(" + id.branch_name.toString() + ")")
                 )
                 startActivity(intent)
-
                 bottomSheetDialog.cancel()
             }
         }
