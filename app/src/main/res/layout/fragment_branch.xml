@@ -35,7 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:textColor="@color/hobee_grey3"
+                    android:textColor="@color/black"
                     android:layout_margin="@dimen/_3sdp"
                     android:textColorHint="@color/hobee_grey3"
                     android:background="@color/white"

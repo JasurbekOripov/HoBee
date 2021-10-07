@@ -15,6 +15,9 @@ object ApiClient {
         httpInterceptor.level = HttpLoggingInterceptor.Level.BODY
         var okkHttpClient = OkHttpClient.Builder()
             .addInterceptor(httpInterceptor)
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
 //            .connectTimeout(5, TimeUnit.MINUTES) // connect timeout
 //            .writeTimeout(5, TimeUnit.MINUTES) // write timeout
 //            .readTimeout(5, TimeUnit.MINUTES) // read timeout

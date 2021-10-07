@@ -123,7 +123,7 @@ class MapActivity : AppCompatActivity() {
                             SharedPreference.getInstance(this).hasLocation = true
                             cameraMoveOn(location.latitude, location.longitude)
                         } else {
-                            Log.d(TAG, "getUserLocatio:  null or min then 0")
+                            cameraMoveOn(41.311081, 69.240562)
 //                            setDefoultLocation()
                         }
                     } catch (e: Exception) {

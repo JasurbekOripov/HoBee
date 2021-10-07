@@ -15,14 +15,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import uz.juo.hobee.MainActivity
 import uz.juo.hobee.R
 import uz.juo.hobee.adapters.BranchInfoAdapter
 import uz.juo.hobee.databinding.FragmentInfoBranchBinding
-import uz.juo.hobee.models.Item
-import uz.juo.hobee.models.ItemMedIdPrice
-import uz.juo.hobee.models.ItemX
+import uz.juo.hobee.models.*
 import uz.juo.hobee.retrofit.ApiClient
 import uz.juo.hobee.retrofit.ApiService
 import uz.juo.hobee.room.AppDataBase
@@ -67,23 +70,29 @@ class InfoBranchFragment : Fragment() {
                 binding.workingTime.text =
                     Functions().getWorkingTime(branch.start_time, branch.end_time)
                 binding.map.setOnClickListener {
-                    var i = Intent(requireContext(), PharmacyMapActivity::class.java)
-                    i.putExtra(
-                        "lat",
-                        ItemMedIdPrice(
-                            branch.address,
-                            branch.distance,
-                            branch.end_time,
-                            branch.id,
-                            branch.latitude,
-                            branch.longitude,
-                            branch.name, branch.phone,
-                            "",
-                            branch.start_time
+                    if (branch.latitude!=0.0&&branch.longitude!=0.0){
+                        var i = Intent(
+                            requireContext(),
+                            PharmacyMapActivity::class.java
                         )
-                    )
-                    startActivity(i)
+                        i.putExtra(
+                            "lat",
+                            ItemMedIdPrice(
+                                branch.address,
+                                branch.distance,
+                                branch.end_time,
+                                branch.id,
+                                branch.latitude,
+                                branch.longitude,
+                                branch.name, branch.phone,
+                                "",
+                                branch.start_time
+                            )
+                        )
+                        startActivity(i)
+                    }
                 }
+
                 binding.phone.setOnClickListener {
                     val intent = Intent(Intent.ACTION_DIAL)
                     intent.data = Uri.parse("tel:" + branch.phone)
@@ -91,7 +100,8 @@ class InfoBranchFragment : Fragment() {
                 }
                 binding.name.text = branch.name
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), e.message.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "No Internet connection", Toast.LENGTH_SHORT)
+                    .show()
             }
 
         }

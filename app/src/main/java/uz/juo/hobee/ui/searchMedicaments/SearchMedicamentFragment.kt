@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.view.isEmpty
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -78,10 +80,13 @@ class SearchMedicamentFragment : Fragment() {
     }
 
     private fun showBottomSheet() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext(),R.style.MyTransparentBottomSheetDialogTheme)
+        val bottomSheetDialog =
+            BottomSheetDialog(requireContext(), R.style.MyTransparentBottomSheetDialogTheme)
         bottomSheetDialog.setContentView(R.layout.manufacturer_bottom_sheet)
         val rv = bottomSheetDialog.findViewById<RecyclerView>(R.id.rv)
         val search = bottomSheetDialog.findViewById<EditText>(R.id.searchManufacturer)
+        val notFoundBottomSheet =
+            bottomSheetDialog.findViewById<LinearLayout>(R.id.not_found_bottomsheet)
         search?.setText(m)
         manufavturerAdapter =
             ManufacturerAdapter(requireContext(), m, object : ManufacturerAdapter.setOnClick {
@@ -105,7 +110,15 @@ class SearchMedicamentFragment : Fragment() {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+//                if (bottomSheetDialog != null) {
+//                if (manufavturerAdapter != null && rv?.isEmpty() == true) {
+//                        rv?.visibility = View.INVISIBLE
+//                        notFoundBottomSheet?.visibility = View.VISIBLE
+//                    } else {
+//                        rv?.visibility = View.VISIBLE
+//                        notFoundBottomSheet?.visibility = View.INVISIBLE
+//                    }
+//                }
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -119,6 +132,7 @@ class SearchMedicamentFragment : Fragment() {
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
                 }
+
             }
         })
         manufacturerViewModel.manufacturers(m).observe(viewLifecycleOwner, {
@@ -137,7 +151,8 @@ class SearchMedicamentFragment : Fragment() {
 //                    var bundle = Bundle()
 //                    bundle.putInt("param1", mediacament.id)
                     SharedPreference.getInstance(requireContext()).medId = mediacament.id.toString()
-                    findNavController().navigate(R.id.infoMedicamentFragment,
+                    findNavController().navigate(
+                        R.id.infoMedicamentFragment,
 //                        bundle
                     )
                 }
@@ -168,20 +183,23 @@ class SearchMedicamentFragment : Fragment() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
+
             }
 
             override fun afterTextChanged(p0: Editable?) {
                 name = p0.toString()
                 try {
                     searchViewMoedl.medicaments(requireContext(), name, m)
-                        .observe(viewLifecycleOwner, Observer {
+                        .observe(viewLifecycleOwner, {
                             lifecycleScope.launch {
                                 adapter.submitData(it)
                             }
+//                            checkMainRvData()
                         })
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
                 }
+                binding.rv.scrollToPosition(0)
             }
         })
         searchViewMoedl.medicaments(requireContext(), name, m).observe(viewLifecycleOwner, {
@@ -192,9 +210,19 @@ class SearchMedicamentFragment : Fragment() {
         binding.rv.adapter = adapter
     }
 
+//    private fun checkMainRvData() {
+//        if (adapter != null && binding.rv.adapter?.itemCount==0) {
+//            showNotFound()
+//        } else {
+//            hideNotFound()
+//        }
+//    }
+
     override fun onResume() {
         super.onResume()
         loadData()
+//        checkMainRvData()
+        m=""
         if (m != "") {
             binding.filterStatus.visibility = View.VISIBLE
         } else {
@@ -206,6 +234,20 @@ class SearchMedicamentFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         (activity as MainActivity).showBottomBar()
+    }
+
+    private fun showNotFound() {
+        if (binding != null) {
+            binding.rv.visibility = View.INVISIBLE
+            binding.notFound.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hideNotFound() {
+        if (binding != null) {
+            binding.rv.visibility = View.VISIBLE
+            binding.notFound.visibility = View.INVISIBLE
+        }
     }
 
     companion object {

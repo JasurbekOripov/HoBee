@@ -1,6 +1,10 @@
 package uz.juo.hobee.ui.home
 
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -9,11 +13,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -78,6 +85,7 @@ class HomeFragment : Fragment() {
             }
         }
         checkInternet()
+        askPermission()
         binding.sendLocationIcon.setOnClickListener {
             var i = Intent(requireContext(), MapActivity::class.java)
             startActivity(i)
@@ -117,17 +125,44 @@ class HomeFragment : Fragment() {
     }
 
     private fun checkLocation() {
-        if (!SharedPreference.getInstance(requireContext()).hasLocation) {
-            val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
-            builder.setTitle("Location Permission")
-                .setMessage("Please for using this app grant the permission and mark location")
-                .setPositiveButton("Ok") { dialog, which ->
-                    var i = Intent(requireContext(), MapActivity::class.java)
-                    startActivity(i)
-                    dialog.cancel()
+        var l = SharedPreference.getInstance(requireContext())
+        if (l.hasLocation) {
+            try {
+                if (l != null && l.location != null) {
+                    lifecycleScope.launch {
+                        getNeariestPharmacy()
+                        var locationName =
+                            SharedPreference.getInstance(requireContext()).location.name.toString()
+                        if (locationName != "Incorrect location") {
+                            binding.adress.text = locationName
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "Incorrect location",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                    }
+                }else{
+                    askPermission()
                 }
-                .setNegativeButton("No") { a, i ->
-                    a.cancel()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Wrong location", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun askPermission() {
+        if (!SharedPreference.getInstance(requireContext()).hasLocation) {
+            val dialog = Dialog(requireContext())
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(false)
+            dialog.setContentView(R.layout.location_dialog)
+            dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            val dialogBtn_cancel = dialog.findViewById(R.id.deny) as CardView
+            dialogBtn_cancel.setOnClickListener {
+                if (helper.isNetworkConnected()) {
                     try {
                         SharedPreference.getInstance(requireContext()).hasLocation = true
                         var name = Functions().getLocationName(
@@ -135,24 +170,47 @@ class HomeFragment : Fragment() {
                             41.311081,
                             69.240562,
                         )
+
                         SharedPreference.getInstance(requireContext())
                             .setLocation("${41.311081}", "${69.240562}", name)
                         binding.adress.text = name
+                        lifecycleScope.launch {
+                            getNeariestPharmacy()
+                        }
+                        dialog.cancel()
                     } catch (e: Exception) {
                         Toast.makeText(requireContext(), "Wrong location", Toast.LENGTH_SHORT)
                             .show()
                     }
-
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "No Internet connection",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-                .setCancelable(false)
-            builder.show()
 
+            }
+            val dialogBtn_okay = dialog.findViewById(R.id.grant) as CardView
+            dialogBtn_okay.setOnClickListener {
+                var i = Intent(requireContext(), MapActivity::class.java)
+                startActivity(i)
+                dialog.cancel()
+            }
+            dialog.setCancelable(false)
+            dialog.show()
         } else {
             try {
                 lifecycleScope.launch {
                     getNeariestPharmacy()
-                    binding.adress.text =
-                        SharedPreference.getInstance(requireContext()).location.name
+                    var locationName =
+                        SharedPreference.getInstance(requireContext()).location.name.toString()
+                    if (locationName != "Incorrect location") {
+                        binding.adress.text = locationName
+                    } else {
+                        Toast.makeText(requireContext(), "Incorrect location", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Wrong location", Toast.LENGTH_SHORT).show()
@@ -217,7 +275,11 @@ class HomeFragment : Fragment() {
             })
             binding.pharmcyRv.adapter = nearByBranchAdapter
         } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Get nearest pharmacy error", Toast.LENGTH_SHORT)
+            Toast.makeText(
+                requireContext(),
+                "Incorrect location or internet disconnected",
+                Toast.LENGTH_SHORT
+            )
                 .show()
         }
     }
@@ -238,6 +300,7 @@ class HomeFragment : Fragment() {
             hide()
         }
     }
+
 
     companion object {
         @JvmStatic

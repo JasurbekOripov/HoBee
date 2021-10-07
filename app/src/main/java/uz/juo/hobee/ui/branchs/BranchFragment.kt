@@ -99,6 +99,7 @@ class BranchFragment : Fragment() {
                             adapter.submitData(it)
                         }
                     })
+                binding.rv.scrollToPosition(0)
             }
         })
         branchesViewModel.branches(name, lat, long).observe(viewLifecycleOwner, Observer {

@@ -38,15 +38,16 @@
                         android:id="@+id/search"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:textColorHint="@color/black"
                         android:layout_gravity="center"
                         android:layout_margin="@dimen/_3sdp"
                         android:background="@color/white"
-                        android:drawableLeft="@drawable/ic_baseline_search_24"
+                        android:drawableStart="@drawable/ic_baseline_search_24"
                         android:drawablePadding="@dimen/_5sdp"
                         android:hint="Search"
-                        android:paddingLeft="@dimen/_5sdp"
-                        android:textColor="@color/black" />
+                        android:paddingStart="@dimen/_5sdp"
+                        android:paddingEnd="@dimen/_10sdp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/hobee_grey3" />
 
                     <ImageView
                         android:id="@+id/filter"
@@ -63,15 +64,15 @@
                         android:id="@+id/filter_status"
                         android:layout_width="@dimen/_7sdp"
                         android:layout_height="@dimen/_7sdp"
-                        android:visibility="invisible"
                         android:layout_gravity="right"
                         android:src="@drawable/check_box"
-                        app:layout_constraintVertical_bias="0.7"
-                        app:layout_constraintHorizontal_bias="0.7"
-                        app:layout_constraintRight_toRightOf="@id/filter"
+                        android:visibility="invisible"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintHorizontal_bias="0.7"
                         app:layout_constraintLeft_toLeftOf="@id/filter"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintRight_toRightOf="@id/filter"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.7" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
@@ -99,5 +100,35 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/searchLinear"
             tools:listitem="@layout/best_mdeicaments_item" />
+
+        <LinearLayout
+            android:id="@+id/not_found"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_60sdp"
+                android:src="@drawable/not_found"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_20sdp"
+                android:textStyle="bold|italic" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/_5sdp"
+                android:text="No information found"
+                android:textColor="#19D2C1"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold|italic" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -2,8 +2,10 @@ package uz.juo.hobee.ui.branchs_on_map
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -26,6 +28,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -39,11 +42,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.awaitResponse
 import uz.juo.hobee.adapters.ManufacturerAdapter
-import uz.juo.hobee.models.BranchForMap
-import uz.juo.hobee.models.BranchesByMedIdPrice
-import uz.juo.hobee.models.ItemMedIdPrice
-import uz.juo.hobee.models.ItemXXX
+import uz.juo.hobee.models.*
 import uz.juo.hobee.retrofit.ApiClient
+import uz.juo.hobee.utils.Functions
 import uz.juo.hobee.utils.NetworkHelper
 import uz.juo.hobee.utils.SharedPreference
 import uz.juo.hobee.viewmodel.branches_for_map.BranchesForMapViewModel
@@ -59,7 +60,7 @@ class BranchsOnMapActivity : AppCompatActivity() {
     lateinit var userLocationLayer: UserLocationLayer
     var list = ArrayList<ItemXXX>()
     lateinit var viewModel: BranchesForMapViewModel
-
+    lateinit var viewPlacemark: PlacemarkMapObject
 
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,14 +71,17 @@ class BranchsOnMapActivity : AppCompatActivity() {
         val mapkit = MapKitFactory.getInstance()
         mapView = findViewById<View>(R.id.branchs_map) as MapView
         userLocationLayer = mapkit.createUserLocationLayer(mapView?.mapWindow!!)
-        userLocationLayer.isHeadingEnabled = true;
-        var location = SharedPreference.getInstance(this).location
-        var id = intent.getIntExtra("id", 1)
-        cameraMoveOn(
-            location.long.toDouble(),
-            location.lat.toDouble()
-        )
+        userLocationLayer.isHeadingEnabled = true
+    }
+
+    private fun loadData() {
         try {
+            var location = SharedPreference.getInstance(this).location
+            var id = intent.getIntExtra("id", 1)
+            cameraMoveOn(
+                location.long.toDouble(),
+                location.lat.toDouble()
+            )
             CoroutineScope(Dispatchers.IO).launch {
                 val info = ApiClient.apiService.branchPriceForMap(location.lat, location.long, id)
                 info.enqueue(object : Callback<BranchForMap> {
@@ -109,6 +113,7 @@ class BranchsOnMapActivity : AppCompatActivity() {
         } catch (e: Exception) {
             list = ArrayList()
         }
+
     }
 
     @SuppressLint("SetTextI18n", "UseCompatLoadingForDrawables")
@@ -123,52 +128,93 @@ class BranchsOnMapActivity : AppCompatActivity() {
             textView.layoutParams = params
             textView.id = data.branch_id
             textView.isClickable = true
-            textView.setPadding(15, 7, 15, 7)
+            textView.textSize = 12F
+            textView.setPadding(25, 12, 25, 12)
             textView.setTextColor(Color.WHITE)
             textView.setTypeface(null, Typeface.BOLD);
             textView.text = "${data.price.subSequence(0, data.price.indexOf("."))} сўм"
             val viewProvider = ViewProvider(textView)
-            val viewPlacemark: PlacemarkMapObject =
-                mapView!!.map.mapObjects.addPlacemark(
-                    Point(
-                        data.latitude.toString().toDouble(),
-                        data.longitude.toString().toDouble()
-                    ), viewProvider
-                )
-            viewPlacemark.userData = data.branch_name
+            viewPlacemark = mapView!!.map.mapObjects.addPlacemark(
+                Point(
+                    data.latitude.toString().toDouble(),
+                    data.longitude.toString().toDouble()
+                ), viewProvider
+            )
+            viewPlacemark.userData = data
             viewProvider.snapshot()
             viewPlacemark.setView(viewProvider)
-
             viewPlacemark.addTapListener(object : MapObjectTapListener {
                 override fun onMapObjectTap(p0: MapObject, p1: Point): Boolean {
-                    setBottomSheet()
+                    try {
+                        setBottomSheet(p0.userData as ItemXXX)
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            this@BranchsOnMapActivity,
+                            "not enough data at this branch",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                     return true
                 }
             })
+
         } else {
-            Toast.makeText(this, "No Location at ${data.branch_id}", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "No Location at ${data.branch_name}", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun setBottomSheet() {
-        val bottomSheetDialog =
-            BottomSheetDialog(this, R.style.MyTransparentBottomSheetDialogTheme)
-        bottomSheetDialog.setContentView(R.layout.manufacturer_bottom_sheet)
-        val rv = bottomSheetDialog.findViewById<RecyclerView>(R.id.rv)
-        val search = bottomSheetDialog.findViewById<EditText>(R.id.searchManufacturer)
+    private fun setBottomSheet(id: ItemXXX) {
+        val bottomSheetDialog = BottomSheetDialog(this, R.style.MyTransparentBottomSheetDialogTheme)
+        bottomSheetDialog.setContentView(R.layout.branch_info_bottom_sheet)
+        val branchName = bottomSheetDialog.findViewById<TextView>(R.id.bsh_branch_name)
+        val branchPrice = bottomSheetDialog.findViewById<TextView>(R.id.bsh_price)
+        val branchlocation = bottomSheetDialog.findViewById<TextView>(R.id.bsh_location)
+        val branchworkingTime = bottomSheetDialog.findViewById<TextView>(R.id.bsh_working_time)
+        val branchDistanse = bottomSheetDialog.findViewById<TextView>(R.id.bsh_distance)
+        val branchMap = bottomSheetDialog.findViewById<CardView>(R.id.bsh_location_btn)
+        val branchCall = bottomSheetDialog.findViewById<CardView>(R.id.bsh_call_btn)
+
+        lifecycleScope.launch {
+            var branch = ApiClient.apiService.getPharmacyById(id.branch_id)
+            branchCall?.setOnClickListener {
+                if (branch.phone != "") {
+                    val intent = Intent(Intent.ACTION_DIAL)
+                    intent.data = Uri.parse("tel:" + branch.phone)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(
+                        this@BranchsOnMapActivity,
+                        "Phone Number not found",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                bottomSheetDialog.cancel()
+            }
+            branchName?.text = branch.name
+            branchlocation?.text = branch.address
+            if (id.price == null || id.price == "") {
+                branchPrice?.text = "нет в наличии"
+            } else {
+                branchPrice?.text = (id.price)
+            }
+            branchworkingTime?.text = Functions().getWorkingTime(
+                branch.start_time.toString(),
+                branch.end_time.toString()
+            )
+            branchMap?.setOnClickListener {
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("geo:<" + id.latitude.toString() + ">,<" + id.longitude.toString() + ">?q=<" + id.latitude.toString() + ">,<" + id.longitude.toString() + ">(" + id.branch_name.toString() + ")")
+                )
+                startActivity(intent)
+
+                bottomSheetDialog.cancel()
+            }
+        }
+
+
         bottomSheetDialog.show()
     }
-
-    @SuppressLint("UseRequireInsteadOfGet")
-    private fun checkInternet() {
-        Log.d(ContentValues.TAG, "checkInternet: worked ")
-        if (helper.isNetworkConnected()) {
-//            getData()
-        } else {
-            Toast.makeText(this, "No Internet connection", Toast.LENGTH_SHORT).show()
-        }
-    }
-
 
     fun cameraMoveOn(lat: Double, long: Double) {
         try {
@@ -194,6 +240,7 @@ class BranchsOnMapActivity : AppCompatActivity() {
         super.onStart()
         MapKitFactory.getInstance().onStart()
         mapView!!.onStart()
+        loadData()
     }
 
 

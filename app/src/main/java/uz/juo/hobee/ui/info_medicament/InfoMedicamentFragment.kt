@@ -16,11 +16,17 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import uz.juo.hobee.MainActivity
 import uz.juo.hobee.R
 import uz.juo.hobee.adapters.MedInfoViewPagerAdapter
 import uz.juo.hobee.databinding.FragmentInfoMedicamentBinding
+import uz.juo.hobee.models.BranchForMap
 import uz.juo.hobee.retrofit.ApiClient
 import uz.juo.hobee.room.AppDataBase
 import uz.juo.hobee.room.entity.FavoritesEntity
@@ -30,6 +36,13 @@ import uz.juo.hobee.utils.MyInterpolator
 import uz.juo.hobee.utils.NetworkHelper
 import uz.juo.hobee.utils.SharedPreference
 import java.lang.Exception
+import android.widget.TextView
+import android.graphics.drawable.ColorDrawable
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.view.Window
+
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -61,9 +74,50 @@ class InfoMedicamentFragment : Fragment() {
         binding.viewPager.isUserInputEnabled = false
         setData()
         binding.map.setOnClickListener {
-            var i = Intent(requireContext(), BranchsOnMapActivity::class.java)
-            i.putExtra("id", SharedPreference.getInstance(requireContext()).medId.toInt())
-            startActivity(i)
+            var location = SharedPreference.getInstance(requireContext()).location
+            CoroutineScope(Dispatchers.IO).launch {
+                val info = ApiClient.apiService.branchPriceForMap(location.lat, location.long,SharedPreference.getInstance(requireContext()).medId.toInt() )
+                info.enqueue(object : Callback<BranchForMap> {
+                    override fun onResponse(
+                        call: Call<BranchForMap>,
+                        response: Response<BranchForMap>
+                    ) {
+
+                        if (response.body()?.items != null) {
+                            var count = 0
+                            for (i in response.body()?.items!!) {
+                                if (i.latitude == null || i.longitude == null) {
+                                    count++
+                                }
+                            }
+                            if (count != response.body()?.items!!.size) {
+                                var i = Intent(requireContext(), BranchsOnMapActivity::class.java)
+                                i.putExtra("id", SharedPreference.getInstance(requireContext()).medId.toInt())
+                                startActivity(i)
+                            } else {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "There are no pharmacies where the address is available",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "There are no pharmacies where the address is available",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<BranchForMap>, t: Throwable) {
+                        Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                })
+            }
         }
         binding.back.setOnClickListener {
             findNavController().popBackStack()
@@ -190,7 +244,6 @@ class InfoMedicamentFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         pos = SharedPreference.getInstance(requireContext()).medId.toInt()
-//        setData()
     }
 
     override fun onDestroy() {
@@ -208,4 +261,5 @@ class InfoMedicamentFragment : Fragment() {
                 }
             }
     }
+
 }

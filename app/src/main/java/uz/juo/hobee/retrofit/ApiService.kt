@@ -20,7 +20,7 @@ interface ApiService {
     suspend fun getPharmacyById(@Path("id") id: Int): Item
 
     @POST("medicaments")
-    suspend fun getMedicationByIdArray(@Query("list") list: ArrayList<Int>): Medicament
+    suspend fun getMedicationByIdArray(@Query("list") list: ArrayList<Int>): Response<List<Medicament>>
 
     @GET("branches/nearest")
     suspend fun getNeariestPharmacy(
@@ -72,7 +72,7 @@ interface ApiService {
     ): BranchesByMedIdPrice
 
     @GET("branches/medicament/map")
-      fun branchPriceForMap(
+    fun branchPriceForMap(
         @Query("latitude") lat: String,
         @Query("longitude") long: String,
         @Query("medicament_id") id: Int

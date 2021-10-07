@@ -149,7 +149,7 @@
                             android:gravity="center_vertical"
                             android:maxLines="1"
                             android:text="@string/search_things"
-                            android:textColor="@color/hobee_grey"
+                            android:textColor="@color/hobee_grey3"
                             android:textSize="@dimen/_14sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
