@@ -42,7 +42,6 @@ class MapActivity : AppCompatActivity() {
     var count = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         MapKitFactory.initialize(this)
         var mapkit = MapKitFactory.getInstance()
         setContentView(R.layout.activity_map)
@@ -53,9 +52,10 @@ class MapActivity : AppCompatActivity() {
         var location = SharedPreference.getInstance(this).location
         try {
             cameraMoveOn(location.long.toDouble(), location.lat.toDouble())
-        }catch (e:java.lang.Exception){
-
+        } catch (e: java.lang.Exception) {
+            getUserLocation()
         }
+
         val save_btn = findViewById<TextView>(R.id.save)
         val getCurrent_btn = findViewById<ImageView>(R.id.getCurrentLocation)
         save_btn.setOnClickListener {
@@ -87,18 +87,6 @@ class MapActivity : AppCompatActivity() {
         getCurrent_btn.setOnClickListener {
             getUserLocation()
         }
-//        mapkit.createLocationManager().requestSingleUpdate(object : LocationListener {
-//            override fun onLocationUpdated(p0: com.yandex.mapkit.location.Location) {
-//                mapView!!.map.move(
-//                    CameraPosition(p0.position, 20.0f, 0.0f, 0.0f),
-//                    Animation(Animation.Type.SMOOTH, 1.0F), null
-//                )
-//            }
-//
-//            override fun onLocationStatusUpdated(locationStatus: LocationStatus) {
-//                Log.d("TAG", "getUserLocation121212:status update ")
-//            }
-//        })
     }
 
     private fun getUserLocation() {
@@ -132,11 +120,10 @@ class MapActivity : AppCompatActivity() {
                 }
 
             } else {
-                Log.d(TAG, "getUserLocation121212:  permisson denied")
                 if (count == 2) {
                     Toast.makeText(
                         this,
-                        "Please grant permission Default location",
+                        "Please grant permission",
                         Toast.LENGTH_SHORT
                     )
                         .show()
@@ -154,7 +141,6 @@ class MapActivity : AppCompatActivity() {
     }
 
     private fun setDefoultLocation() {
-        Log.d(TAG, "getUserLocation121212:  default location get")
         var lat = 41.311081
         var long = 69.240562
         var name = Functions().getLocationName(
@@ -176,7 +162,7 @@ class MapActivity : AppCompatActivity() {
                 Animation(Animation.Type.SMOOTH, 2F), null
             )
         } catch (e: java.lang.Exception) {
-            Toast.makeText(this, "Internet Error", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No internet connection ", Toast.LENGTH_SHORT).show()
         }
 
     }
