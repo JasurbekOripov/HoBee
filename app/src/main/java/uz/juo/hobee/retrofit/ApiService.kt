@@ -2,10 +2,7 @@ package uz.juo.hobee.retrofit
 
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 import uz.juo.hobee.models.*
 
 interface ApiService {
@@ -19,8 +16,8 @@ interface ApiService {
     @GET("branches/{id}")
     suspend fun getPharmacyById(@Path("id") id: Int): Item
 
-    @POST("medicaments")
-    suspend fun getMedicationByIdArray(@Query("list") list: ArrayList<Int>): Response<List<Medicament>>
+    @POST("medicaments/list")
+     fun updateFavorites(@Body list: PostObject): Call<ObjectFavorites>
 
     @GET("branches/nearest")
     suspend fun getNeariestPharmacy(

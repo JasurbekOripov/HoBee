@@ -19,4 +19,7 @@ interface FavoriteDao {
 
     @Query("Delete from Favorite_table where id=:id")
     fun delete(id: Int)
+
+    @Query("Delete from Favorite_table ")
+    fun deleteAll()
 }
