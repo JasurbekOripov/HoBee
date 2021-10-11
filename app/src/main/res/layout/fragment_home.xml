@@ -64,7 +64,7 @@
                             android:layout_weight="1"
                             android:ellipsize="end"
                             android:maxLines="1"
-                            android:text="No Location"
+                            android:text="Location"
                             android:textColor="@color/hobee_grey"
                             android:textSize="@dimen/_9sdp" />
                     </LinearLayout>
@@ -175,20 +175,25 @@
                     <LinearLayout
                         android:id="@+id/l2"
                         android:layout_width="match_parent"
-
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:paddingBottom="@dimen/_5sdp"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <androidx.recyclerview.widget.RecyclerView
+                        <androidx.viewpager2.widget.ViewPager2
                             android:id="@+id/view_pager"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/_155sdp"
-                            android:orientation="horizontal"
-                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                            tools:listitem="@layout/view_pager_item" />
+                            android:layout_height="@dimen/_155sdp" />
 
+
+                        <com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator
+                            android:id="@+id/indicator"
+                            app:dotsSize="@dimen/_10sdp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_horizontal"
+                            app:dotsColor="@color/main_blue2"
+                            app:dotsStrokeColor="@color/main_blue2" />
 
                     </LinearLayout>
 

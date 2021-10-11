@@ -50,7 +50,6 @@ private const val ARG_PARAM2 = "param2"
 class InfoMedicamentFragment : Fragment() {
     lateinit var binding: FragmentInfoMedicamentBinding
     var pos = 1
-
     //    private var param1: Int? = null
     lateinit var viewPageraAdapter: MedInfoViewPagerAdapter
 

@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
     <fragment
         android:id="@+id/my_nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -20,8 +19,9 @@
 
     <me.ibrahimsn.lib.SmoothBottomBar
         android:id="@+id/bottomNavBar"
+        app:layout_constraintHeight_percent="0.09"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="0dp"
         app:backgroundColor="@color/main_blue2"
         app:indicatorColor="@color/main_blue"
         app:indicatorRadius="10dp"

@@ -24,15 +24,20 @@ import androidx.cardview.widget.CardView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.github.ybq.android.spinkit.sprite.Sprite
 import com.github.ybq.android.spinkit.style.FadingCircle
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import uz.juo.hobee.MainActivity
 import uz.juo.hobee.R
 import uz.juo.hobee.adapters.HomeBranchAdapter
 import uz.juo.hobee.adapters.HomeMediacamentAdapter
 import uz.juo.hobee.adapters.HomeRvBannerAdapter
+import uz.juo.hobee.adapters.ViewPagerAdapter
 import uz.juo.hobee.databinding.FragmentHomeBinding
 import uz.juo.hobee.models.Medicament
 import uz.juo.hobee.models.NeariestPharmcy
@@ -42,6 +47,8 @@ import uz.juo.hobee.room.entity.FavoritesEntity
 import uz.juo.hobee.ui.location.MapActivity
 import uz.juo.hobee.utils.*
 import java.lang.Exception
+import java.lang.Math.abs
+import java.util.*
 import kotlin.collections.ArrayList
 
 private const val ARG_PARAM1 = "param1"
@@ -55,7 +62,8 @@ class HomeFragment : Fragment() {
     lateinit var bestAdapter: HomeMediacamentAdapter
     private var param1: String? = null
     private var param2: String? = null
-    lateinit var viewPagerAdapter: HomeRvBannerAdapter
+    var handler = Handler(Looper.getMainLooper())
+    lateinit var viewPagerAdapter: ViewPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +80,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        viewPagerAdapter = HomeRvBannerAdapter(requireContext())
+        viewPagerAdapter = ViewPagerAdapter(requireActivity())
         val progressBar = binding.spinKit as ProgressBar
         val doubleBounce: Sprite = FadingCircle()
         progressBar.indeterminateDrawable = doubleBounce
@@ -90,16 +98,90 @@ class HomeFragment : Fragment() {
             var i = Intent(requireContext(), MapActivity::class.java)
             startActivity(i)
         }
-        binding.viewPager.adapter = viewPagerAdapter
-        binding.viewPager.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-//               var anim = AnimationUtils.loadAnimation(requireContext(), R.anim.)
-//               binding.viewPager.startAnimation(anim)
-            }
-        })
         return binding.root
     }
+
+    private fun seViewPager() {
+        binding.viewPager.adapter = viewPagerAdapter
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                binding.viewPager.setPageTransformer(object : ViewPager2.PageTransformer {
+                    override fun transformPage(page: View, pos: Float) {
+//                            val rotation = -180f * pos
+//                            page.alpha = if (rotation > 90f || rotation < -90f) 0f else 1f
+//                                    page.pivotX = page.width * 0.5f
+//                                page.pivotY = page.height * 0.5f
+//                            page.rotationX = rotation
+                        setAnim(pos, page)
+                    }
+                })
+//                handler.removeCallbacks(slideRunnable)
+//                handler.postDelayed(slideRunnable,5000)
+//                if (position== 2){
+//                    handler.postDelayed({
+//                        binding.viewPager.setCurrentItem(0,false)
+//                    },2000)
+//                }
+            }
+        })
+//
+        binding.indicator.setViewPager2(binding.viewPager)
+//        val DELAY_MS: Long = 2000
+//        val PERIOD_MS: Long = 3000
+//        val handler = Handler(Looper.getMainLooper())
+//        val update = Runnable {
+//            if (binding.viewPager.currentItem == 2) {
+//                binding.viewPager.currentItem = 0
+//            } else {
+//               slideRunnable
+//            }
+//        }
+//        Timer().schedule(object : TimerTask() {
+//            override fun run() {
+//                handler.post(update)
+//            }
+//        }, DELAY_MS, PERIOD_MS)
+    }
+
+    private fun setAnim(position: Float, view: View) {
+        val MIN_SCALE = 0.85f
+        val MIN_ALPHA = 0.5f
+        view.apply {
+            val pageWidth = width
+            val pageHeight = height
+            when {
+                position < -1 -> { // [-Infinity,-1)
+                    // This page is way off-screen to the left.
+                    alpha = 0f
+                }
+                position <= 1 -> { // [-1,1]
+                    // Modify the default slide transition to shrink the page as well
+                    val scaleFactor = Math.max(MIN_SCALE, 1 - kotlin.math.abs(position).toFloat())
+                    val vertMargin = pageHeight * (1 - scaleFactor) / 2
+                    val horzMargin = pageWidth * (1 - scaleFactor) / 2
+                    translationX = if (position < 0) {
+                        horzMargin - vertMargin / 2
+                    } else {
+                        horzMargin + vertMargin / 2
+                    }
+
+                    // Scale the page down (between MIN_SCALE and 1)
+                    scaleX = scaleFactor
+                    scaleY = scaleFactor
+
+                    // Fade the page relative to its size.
+                    alpha = (MIN_ALPHA +
+                            (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA)))
+                }
+                else -> { // (1,+Infinity]
+                    // This page is way off-screen to the right.
+                    alpha = 0f
+                }
+            }
+        }
+    }
+
 
     private fun hide() {
         view?.let {
@@ -119,9 +201,14 @@ class HomeFragment : Fragment() {
         binding.dataConstraid.visibility = View.VISIBLE
     }
 
+    private val slideRunnable: Runnable = Runnable {
+        binding.viewPager.currentItem = binding.viewPager.currentItem + 1
+    }
+
     override fun onStart() {
         super.onStart()
         checkLocation()
+        seViewPager()
     }
 
     private fun checkLocation() {
@@ -144,7 +231,7 @@ class HomeFragment : Fragment() {
                                 .show()
                         }
                     }
-                }else{
+                } else {
                     askPermission()
                 }
             } catch (e: Exception) {
@@ -300,7 +387,6 @@ class HomeFragment : Fragment() {
             hide()
         }
     }
-
 
     companion object {
         @JvmStatic

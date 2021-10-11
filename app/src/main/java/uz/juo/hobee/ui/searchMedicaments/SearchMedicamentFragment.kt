@@ -33,6 +33,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import uz.juo.hobee.R
 import uz.juo.hobee.adapters.ManufacturerAdapter
 import uz.juo.hobee.viewmodel.manufacturer.ManufacturerViewModel
+import java.sql.Time
+import java.util.*
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -40,6 +42,7 @@ private const val ARG_PARAM2 = "param2"
 
 class SearchMedicamentFragment : Fragment() {
     lateinit var binding: FragmentSearchBinding
+    var time = 0L
     lateinit var manufacturerViewModel: ManufacturerViewModel
     lateinit var searchViewMoedl: SearchViewModel
     lateinit var adapter: SearchMedicamentAdapter
@@ -114,6 +117,11 @@ class SearchMedicamentFragment : Fragment() {
             override fun afterTextChanged(p0: Editable?) {
                 m = p0.toString()
                 try {
+                    if (m != "") {
+                        binding.filterStatus.visibility = View.VISIBLE
+                    } else {
+                        binding.filterStatus.visibility = View.INVISIBLE
+                    }
                     manufacturerViewModel.manufacturers(m).observe(viewLifecycleOwner, {
                         lifecycleScope.launch {
                             manufavturerAdapter.submitData(it)
@@ -178,13 +186,18 @@ class SearchMedicamentFragment : Fragment() {
             override fun afterTextChanged(p0: Editable?) {
                 name = p0.toString()
                 try {
-                    searchViewMoedl.medicaments(requireContext(), name, m)
-                        .observe(viewLifecycleOwner, {
-                            lifecycleScope.launch {
-                                adapter.submitData(it)
-                                binding.rv.scrollToPosition(0)
-                            }
-                        })
+                    var interval = System.currentTimeMillis() - time
+                    if (interval > 400 || name == "") {
+                        time = System.currentTimeMillis()
+                        searchViewMoedl.medicaments(requireContext(), name, m)
+                            .observe(viewLifecycleOwner, {
+                                lifecycleScope.launch {
+                                    adapter.submitData(it)
+                                    binding.rv.scrollToPosition(0)
+                                }
+                            })
+                    }
+
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
                 }
@@ -204,7 +217,7 @@ class SearchMedicamentFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         loadData()
-        m=""
+        m = ""
         if (m != "") {
             binding.filterStatus.visibility = View.VISIBLE
         } else {

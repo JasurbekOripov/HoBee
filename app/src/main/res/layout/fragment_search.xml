@@ -15,9 +15,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/searchLinear"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
+            android:layout_height="0dp"
             android:background="@color/main_blue"
             android:padding="@dimen/_3sdp"
+            app:layout_constraintHeight_percent="0.09"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.cardview.widget.CardView
@@ -51,10 +52,12 @@
 
                     <ImageView
                         android:id="@+id/filter"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="0dp"
+                        app:layout_constraintHeight_percent="1"
+                        android:layout_height="0dp"
+                        app:layout_constraintWidth_percent="0.11"
                         android:layout_gravity="right"
-                        android:padding="@dimen/_10sdp"
+                        android:padding="@dimen/_6sdp"
                         android:src="@drawable/ic_filter"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -62,8 +65,10 @@
 
                     <ImageView
                         android:id="@+id/filter_status"
-                        android:layout_width="@dimen/_7sdp"
-                        android:layout_height="@dimen/_7sdp"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintHeight_percent="0.27"
+                        app:layout_constraintWidth_percent="0.04"
                         android:layout_gravity="right"
                         android:src="@drawable/check_box"
                         android:visibility="invisible"
