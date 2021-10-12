@@ -41,7 +41,14 @@ import android.graphics.drawable.ColorDrawable
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
+import android.net.Uri
+import android.os.Build
 import android.view.Window
+import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import uz.juo.hobee.models.GetById
+import uz.juo.hobee.models.ItemXXX
 
 
 private const val ARG_PARAM1 = "param1"
@@ -50,14 +57,15 @@ private const val ARG_PARAM2 = "param2"
 class InfoMedicamentFragment : Fragment() {
     lateinit var binding: FragmentInfoMedicamentBinding
     var pos = 1
+
     //    private var param1: Int? = null
     lateinit var viewPageraAdapter: MedInfoViewPagerAdapter
 
     //    private var param2: String? = null
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
 //            param1 = it.getInt(ARG_PARAM1)
 //            param2 = it.getString(ARG_PARAM2)
         }
@@ -71,11 +79,40 @@ class InfoMedicamentFragment : Fragment() {
     ): View {
         binding = FragmentInfoMedicamentBinding.inflate(inflater, container, false)
         binding.viewPager.isUserInputEnabled = false
-        setData()
+        var data = GetById()
+        if (NetworkHelper(requireContext()).isNetworkConnected()) {
+            try {
+                lifecycleScope.launch {
+                    data = ApiClient.apiService.getMedicamentById(pos)
+                    setData(data)
+                }
+            } catch (e: Exception) {
+//                Toast.makeText(requireContext(), "id null", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            view?.let {
+                Snackbar.make(it, "No Internet connection", Snackbar.LENGTH_LONG)
+                    .show()
+            }
+        }
+        binding.info.setOnClickListener {
+            try {
+                openInfo(data)
+            } catch (e: Exception) {
+                view?.let {
+                    Snackbar.make(it, "No Internet connection", Snackbar.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
         binding.map.setOnClickListener {
             var location = SharedPreference.getInstance(requireContext()).location
             CoroutineScope(Dispatchers.IO).launch {
-                val info = ApiClient.apiService.branchPriceForMap(location.lat, location.long,SharedPreference.getInstance(requireContext()).medId.toInt() )
+                val info = ApiClient.apiService.branchPriceForMap(
+                    location.lat,
+                    location.long,
+                    SharedPreference.getInstance(requireContext()).medId.toInt()
+                )
                 info.enqueue(object : Callback<BranchForMap> {
                     override fun onResponse(
                         call: Call<BranchForMap>,
@@ -91,7 +128,10 @@ class InfoMedicamentFragment : Fragment() {
                             }
                             if (count != response.body()?.items!!.size) {
                                 var i = Intent(requireContext(), BranchsOnMapActivity::class.java)
-                                i.putExtra("id", SharedPreference.getInstance(requireContext()).medId.toInt())
+                                i.putExtra(
+                                    "id",
+                                    SharedPreference.getInstance(requireContext()).medId.toInt()
+                                )
                                 startActivity(i)
                             } else {
                                 Toast.makeText(
@@ -148,7 +188,8 @@ class InfoMedicamentFragment : Fragment() {
                         }
                     }
                     if (!likable) {
-                        val myAnim: Animation = AnimationUtils.loadAnimation(context, R.anim.bounce_for_like)
+                        val myAnim: Animation =
+                            AnimationUtils.loadAnimation(context, R.anim.bounce_for_like)
                         val interpolator = MyInterpolator(0.2, 20.0)
                         myAnim.interpolator = interpolator
                         binding.like.startAnimation(myAnim)
@@ -203,33 +244,37 @@ class InfoMedicamentFragment : Fragment() {
         }
     }
 
-    private fun setData() {
-        if (NetworkHelper(requireContext()).isNetworkConnected()) {
-            try {
-                binding.linear.visibility = View.VISIBLE
-                lifecycleScope.launch {
-                    var data = ApiClient.apiService.getMedicamentById(pos)
-                    Log.d(ContentValues.TAG, "loadData1212121212: $data")
-                    checkLikable()
-                    binding.name.text = data.name
-                    binding.country.text = data.country
-                    binding.description.text = data.dosage_info
-                    binding.manufacturer.text = data.manufacturer
-                    if (data.price == null || data.price == "") {
-                        binding.priceFrom.text = "нет в наличии"
-                    } else {
-                        binding.priceFrom.text = ("от ${data.price}")
-                    }
-                }
-            } catch (e: Exception) {
-//                Toast.makeText(requireContext(), "id null", Toast.LENGTH_SHORT).show()
+    fun openInfo(data: GetById) {
+        val bottomSheetDialog =
+            BottomSheetDialog(requireContext(), R.style.MyTransparentBottomSheetDialogTheme)
+        bottomSheetDialog.setContentView(R.layout.info_med_bottomsheet)
+        val branchName = bottomSheetDialog.findViewById<TextView>(R.id.info_med_med_name)
+        val branchPrice = bottomSheetDialog.findViewById<TextView>(R.id.info_med_price_from)
+        val manufacturer = bottomSheetDialog.findViewById<TextView>(R.id.info_med_manufacturer)
+        val description = bottomSheetDialog.findViewById<TextView>(R.id.info_med_description)
+        val country = bottomSheetDialog.findViewById<TextView>(R.id.info_med_country)
+        bottomSheetDialog.setCanceledOnTouchOutside(true)
+        lifecycleScope.launch {
+            branchName?.text = data.name
+            if (data.price == null || data.price == "") {
+                branchPrice?.text = "нет в наличии"
+            } else {
+                branchPrice?.text = (data.price)
             }
+            manufacturer?.text = data.manufacturer
+            description?.text = data.dosage_info
+            country?.text = data.country
+        }
+        bottomSheetDialog.show()
+    }
+
+    private fun setData(data: GetById) {
+        checkLikable()
+        binding.name.text = data.name
+        if (data.price == null || data.price == "") {
+            binding.priceFrom.text = "нет в наличии"
         } else {
-            binding.linear.visibility = View.INVISIBLE
-            view?.let {
-                Snackbar.make(it, "No Internet connection", Snackbar.LENGTH_LONG)
-                    .show()
-            }
+            binding.priceFrom.text = ("от ${data.price}")
         }
     }
 
@@ -248,6 +293,7 @@ class InfoMedicamentFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         (activity as MainActivity).showBottomBar()
+//        activity?.window?.statusBarColor = Color.parseColor("#1B6DDC")
     }
 
     companion object {

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_margin="@dimen/_10sdp"
+    android:backgroundTint="@color/white"
+    android:layout_height="match_parent"
+    app:cardCornerRadius="@dimen/_7sdp">
+
+    <LinearLayout
+        android:id="@+id/info_med_linear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_10sdp"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/_70sdp"
+                android:layout_height="@dimen/_70sdp"
+                android:src="@drawable/medecine_best" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/_10sdp">
+
+                <TextView
+                    android:id="@+id/info_med_med_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:maxLines="1"
+                    android:paddingRight="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_11sdp" />
+
+                <TextView
+                    android:id="@+id/info_med_price_from"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="@dimen/_10sdp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text=""
+                    android:textColor="@color/main_blue"
+                    android:textSize="@dimen/_14sdp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_marginTop="@dimen/_10sdp"
+            android:id="@+id/info_med_country"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:paddingRight="@dimen/_10sdp"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="@dimen/_11sdp" />
+
+
+        <TextView
+            android:layout_marginTop="@dimen/_5sdp"
+            android:id="@+id/info_med_manufacturer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:paddingRight="@dimen/_10sdp"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="@dimen/_11sdp" />
+
+        <TextView
+            android:layout_marginTop="@dimen/_5sdp"
+            android:id="@+id/info_med_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:paddingRight="@dimen/_10sdp"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="@dimen/_11sdp" />
+
+        <TextView
+            android:layout_marginTop="@dimen/_5sdp"
+            android:id="@+id/info_med_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:paddingRight="@dimen/_10sdp"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="@dimen/_11sdp" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
