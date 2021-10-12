@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:backgroundTint="@color/white"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/_10sdp"
     app:cardCornerRadius="@dimen/_10sdp">
@@ -10,7 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#26000000"
+        android:background="@color/hobee_grey"
         android:orientation="vertical"
         android:padding="@dimen/_5sdp">
 
@@ -46,8 +47,9 @@
             android:layout_width="match_parent"
             app:layout_constraintTop_toBottomOf="@id/card"
             android:layout_height="wrap_content"
+            app:cardUseCompatPadding="true"
             android:layout_marginTop="@dimen/_5sdp"
-            android:background="@color/white"
+            android:backgroundTint="@color/white"
             app:cardCornerRadius="@dimen/_10sdp">
 
             <androidx.recyclerview.widget.RecyclerView
