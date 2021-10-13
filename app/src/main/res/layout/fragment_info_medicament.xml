@@ -66,6 +66,7 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab"
             android:layout_width="match_parent"
+            app:tabRippleColor="@null"
             android:layout_height="?actionBarSize"
             android:background="@color/white"
             app:tabSelectedTextColor="@color/main_blue2"
@@ -80,7 +81,8 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:background="@color/white"
-            app:cardElevation="@dimen/_2sdp"
+            app:cardMaxElevation="@dimen/_4sdp"
+            app:cardElevation="@dimen/_4sdp"
             android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout

@@ -20,8 +20,6 @@ import com.yandex.mapkit.mapview.MapView
 import com.yandex.mapkit.user_location.UserLocationLayer
 import uz.juo.hobee.R
 import com.yandex.mapkit.Animation
-import com.yandex.mapkit.map.CameraPosition
-import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.runtime.ui_view.ViewProvider
 import android.view.ViewGroup
 import android.widget.EditText
@@ -32,8 +30,9 @@ import androidx.cardview.widget.CardView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.yandex.mapkit.map.MapObject
-import com.yandex.mapkit.map.MapObjectTapListener
+import com.yandex.mapkit.map.*
+import com.yandex.mapkit.map.internal.ClusterizedPlacemarkCollectionBinding
+import com.yandex.runtime.image.ImageProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -57,6 +56,7 @@ class BranchsOnMapActivity : AppCompatActivity() {
     private lateinit var helper: NetworkHelper
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var mapView: MapView? = null
+//    lateinit var collection: ClusterizedPlacemarkCollection
     lateinit var userLocationLayer: UserLocationLayer
     var list = ArrayList<ItemXXX>()
     lateinit var viewModel: BranchesForMapViewModel
@@ -72,6 +72,7 @@ class BranchsOnMapActivity : AppCompatActivity() {
         mapView = findViewById<View>(R.id.branchs_map) as MapView
         userLocationLayer = mapkit.createUserLocationLayer(mapView?.mapWindow!!)
         userLocationLayer.isHeadingEnabled = true
+
     }
 
     private fun loadData() {
@@ -91,6 +92,8 @@ class BranchsOnMapActivity : AppCompatActivity() {
                                 location.lat.toDouble()
                             )
                             list = response.body()?.items as ArrayList<ItemXXX>
+
+//                            collection = mapView!!.map.mapObjects.addClusterizedPlacemarkCollection(this@BranchsOnMapActivity)
                             for (i in list) {
                                 setTv(i)
                             }
@@ -134,15 +137,16 @@ class BranchsOnMapActivity : AppCompatActivity() {
             textView.setTypeface(null, Typeface.BOLD);
             textView.text = "${data.price.subSequence(0, data.price.indexOf("."))} сўм"
             val viewProvider = ViewProvider(textView)
-            viewPlacemark = mapView!!.map.mapObjects.addPlacemark(
+            viewPlacemark = mapView?.map?.mapObjects?.addPlacemark(
                 Point(
                     data.latitude.toString().toDouble(),
                     data.longitude.toString().toDouble()
                 ), viewProvider
-            )
+            )!!
             viewPlacemark.userData = data
             viewProvider.snapshot()
             viewPlacemark.setView(viewProvider)
+//            collection.clusterPlacemarks(30.0, 10)
             viewPlacemark.addTapListener(object : MapObjectTapListener {
                 override fun onMapObjectTap(p0: MapObject, p1: Point): Boolean {
                     try {
@@ -239,6 +243,10 @@ class BranchsOnMapActivity : AppCompatActivity() {
         mapView!!.onStart()
         loadData()
     }
+
+//    override fun onClusterAdded(p0: Cluster) {
+//        p0.appearance.setIcon(ImageProvider.fromResource(this, R.drawable.blue_location))
+//    }
 
 
 }

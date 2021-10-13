@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/_3sdp"
-    android:layout_marginRight="@dimen/_3sdp"
     android:layout_marginTop="@dimen/_3sdp"
+    android:layout_marginRight="@dimen/_3sdp"
     android:backgroundTint="@color/white"
     app:cardCornerRadius="@dimen/_8sdp"
     app:cardUseCompatPadding="true">
@@ -26,7 +26,7 @@
             android:paddingRight="@dimen/_5sdp"
             android:text="Branch name"
             android:textColor="@color/black"
-            android:textSize="@dimen/_14sdp"
+            android:textSize="@dimen/_13sdp"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -37,10 +37,9 @@
             android:maxLines="1"
             android:text="15.55 cym"
             android:textColor="@color/main_blue"
-            android:textSize="@dimen/_14sdp"
+            android:textSize="@dimen/_15sdp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/branch_name" />
-
 
         <TextView
             android:id="@+id/location"
@@ -52,18 +51,18 @@
             android:paddingRight="@dimen/_10sdp"
             android:text="Yunusobot"
             android:textColor="@color/black"
-            android:textSize="@dimen/_9sdp"
+            android:textSize="@dimen/_10sdp"
             app:layout_constraintTop_toBottomOf="@id/price" />
 
         <TextView
             android:id="@+id/working_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_13sdp"
             android:maxLines="1"
             android:text="Full day"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_9sdp"
+            android:textColor="@color/hobee_grey4"
+            android:textSize="@dimen/_10sdp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/location" />
 
@@ -71,53 +70,57 @@
             android:id="@+id/distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_7sdp"
             android:maxLines="1"
-            android:text="Full day"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_9sdp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/location" />
+            android:text="distance"
+            android:textColor="@color/hobee_grey4"
+            android:textSize="@dimen/_10sdp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/working_time" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="@dimen/_5sdp"
-            app:layout_constraintTop_toBottomOf="@id/working_time">
+            android:padding="@dimen/_3sdp"
+            app:layout_constraintBottom_toBottomOf="@id/distance"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/working_time">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/location_btn"
-                android:layout_width="@dimen/_100sdp"
-                android:layout_height="@dimen/_28sdp"
-                android:layout_marginRight="@dimen/_25sdp"
+                android:layout_width="@dimen/_33sdp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/_5sdp"
                 android:backgroundTint="@color/main_blue"
                 app:cardCornerRadius="@dimen/_4sdp">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:layout_margin="@dimen/_3sdp"
+                    android:padding="@dimen/_5sdp"
                     android:src="@drawable/ic_location" />
 
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/call_btn"
-                android:layout_width="@dimen/_100sdp"
-                android:layout_height="@dimen/_28sdp"
-                android:layout_marginLeft="@dimen/_25sdp"
+                android:layout_width="@dimen/_33sdp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
                 android:backgroundTint="@color/hobee_green"
-                app:cardCornerRadius="@dimen/_4sdp"
-                tools:ignore="RtlHardcoded">
+                app:cardCornerRadius="@dimen/_4sdp">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:padding="@dimen/_4sdp"
+                    android:layout_margin="@dimen/_3sdp"
+                    android:padding="@dimen/_5sdp"
                     android:src="@drawable/ic_phone" />
 
             </androidx.cardview.widget.CardView>

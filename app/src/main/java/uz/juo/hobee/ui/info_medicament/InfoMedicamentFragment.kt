@@ -69,8 +69,13 @@ class InfoMedicamentFragment : Fragment() {
 //            param1 = it.getInt(ARG_PARAM1)
 //            param2 = it.getString(ARG_PARAM2)
         }
-        (activity as MainActivity).hideBottomBar()
-        pos = SharedPreference.getInstance(requireContext()).medId.toInt()
+        try {
+            (activity as MainActivity).hideBottomBar()
+            pos = SharedPreference.getInstance(requireContext()).medId.toInt()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+
     }
 
     override fun onCreateView(
@@ -287,12 +292,13 @@ class InfoMedicamentFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        (activity as MainActivity).hideBottomBar()
         pos = SharedPreference.getInstance(requireContext()).medId.toInt()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        (activity as MainActivity).showBottomBar()
+            (activity as MainActivity).showBottomBar()
 //        activity?.window?.statusBarColor = Color.parseColor("#1B6DDC")
     }
 

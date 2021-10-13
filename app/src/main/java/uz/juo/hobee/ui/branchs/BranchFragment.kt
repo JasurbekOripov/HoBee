@@ -33,7 +33,7 @@ private const val ARG_PARAM2 = "param2"
 class BranchFragment : Fragment() {
     private lateinit var helper: NetworkHelper
     lateinit var binding: FragmentBranchBinding
-
+    var interval = 0L
     lateinit var branchesViewModel: AllBranchesViewModel
     lateinit var adapter: AllBranchesAdapter
     private var param1: String? = null
@@ -93,13 +93,17 @@ class BranchFragment : Fragment() {
 
             override fun afterTextChanged(p0: Editable?) {
                 name = p0.toString()
-                branchesViewModel.branches(name, lat, long)
-                    .observe(viewLifecycleOwner, Observer {
-                        lifecycleScope.launch {
-                            adapter.submitData(it)
-                        }
-                    })
-                binding.rv.scrollToPosition(0)
+                var time = System.currentTimeMillis() - interval
+                if (time > 400 || name == "") {
+                    interval = System.currentTimeMillis()
+                    branchesViewModel.branches(name, lat, long)
+                        .observe(viewLifecycleOwner, Observer {
+                            lifecycleScope.launch {
+                                binding.rv.scrollToPosition(0)
+                                adapter.submitData(it)
+                            }
+                        })
+                }
             }
         })
         branchesViewModel.branches(name, lat, long).observe(viewLifecycleOwner, Observer {

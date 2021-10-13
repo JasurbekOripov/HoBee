@@ -45,6 +45,7 @@ class InfoBranchFragment : Fragment() {
     lateinit var binding: FragmentInfoBranchBinding
     var name = ""
     private var param1: String? = null
+    var interval = 0L
     private var param2: String? = null
     lateinit var viewModel: MedicamentsPharmacyViewModel
     lateinit var adapter: BranchInfoAdapter
@@ -70,7 +71,7 @@ class InfoBranchFragment : Fragment() {
                 binding.workingTime.text =
                     Functions().getWorkingTime(branch.start_time, branch.end_time)
                 binding.map.setOnClickListener {
-                    if (branch.latitude!=0.0&&branch.longitude!=0.0){
+                    if (branch.latitude != 0.0 && branch.longitude != 0.0) {
                         var i = Intent(
                             requireContext(),
                             PharmacyMapActivity::class.java
@@ -114,12 +115,17 @@ class InfoBranchFragment : Fragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {
                 name = p0.toString()
-                viewModel.medicaments(requireContext(), name, param1!!.toInt())
-                    .observe(viewLifecycleOwner, Observer {
-                        lifecycleScope.launch {
-                            adapter.submitData(it)
-                        }
-                    })
+                var time = System.currentTimeMillis() - interval
+                if (time > 400 || name == "") {
+                    interval = System.currentTimeMillis()
+                    viewModel.medicaments(requireContext(), name, param1!!.toInt())
+                        .observe(viewLifecycleOwner, Observer {
+                            lifecycleScope.launch {
+                                binding.rv.scrollToPosition(0)
+                                adapter.submitData(it)
+                            }
+                        })
+                }
             }
         })
         adapter = BranchInfoAdapter(requireContext(), object : BranchInfoAdapter.setOnClick {

@@ -58,7 +58,7 @@ class Functions {
     }
 
     fun getLocationName(context: Context, latitude: Double, longitude: Double): String {
-        var name = "Incorrect location"
+        var name = "Location"
         try {
             val geocoder = Geocoder(context, Locale.getDefault())
             val listAddresses: List<Address>? =

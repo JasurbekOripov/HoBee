@@ -220,15 +220,35 @@ class HomeFragment : Fragment() {
                         getNeariestPharmacy()
                         var locationName =
                             SharedPreference.getInstance(requireContext()).location.name.toString()
-                        if (locationName != "Incorrect location") {
+                        if (locationName != "Location") {
                             binding.adress.text = locationName
                         } else {
-                            Toast.makeText(
-                                requireContext(),
-                                "Incorrect location",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            try {
+                                var s = Functions().getLocationName(
+                                    requireContext(),
+                                    l.location.lat.toDouble(),
+                                    l.location.long.toDouble()
+                                )
+                                if (s != "Location") {
+                                    SharedPreference.getInstance(requireContext()).location.name = s
+                                    binding.adress.text = s
+                                } else {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Incorrect location please mark location again",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    var intenet = Intent(requireContext(), MapActivity::class.java)
+                                    startActivity(intenet)
+                                }
+                            } catch (e: Exception) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Incorrect location please mark location again",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                            }
                         }
                     }
                 } else {
@@ -342,7 +362,7 @@ class HomeFragment : Fragment() {
                 })
             binding.medicamentRv.adapter = bestAdapter
         } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Server Error", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Internet disconnected or Server Error", Toast.LENGTH_SHORT).show()
         }
 
     }
