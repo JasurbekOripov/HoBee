@@ -120,18 +120,37 @@ class SearchMedicamentFragment : Fragment() {
                     if (m != "") {
                         binding.filterStatus.visibility = View.VISIBLE
                     } else {
+                        manufavturerAdapter = ManufacturerAdapter(
+                            requireContext(),
+                            m,
+                            object : ManufacturerAdapter.setOnClick {
+                                override fun itemClicked(m1: String, position1: Int) {
+                                    position = position1
+                                    m = m1
+                                    binding.filterStatus.visibility = View.VISIBLE
+                                    searchViewMoedl.medicaments(requireContext(), name, m)
+                                        .observe(viewLifecycleOwner, Observer {
+                                            lifecycleScope.launch {
+                                                adapter.submitData(it)
+                                                rv?.scrollToPosition(position)
+                                            }
+                                        })
+                                    bottomSheetDialog.cancel()
+                                }
+                            })
                         binding.filterStatus.visibility = View.INVISIBLE
+                        rv?.adapter = manufavturerAdapter
                     }
                     manufacturerViewModel.manufacturers(m).observe(viewLifecycleOwner, {
                         lifecycleScope.launch {
                             manufavturerAdapter.submitData(it)
-                            rv?.scrollToPosition(position)
+
                         }
                     })
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
                 }
-
+                rv?.scrollToPosition(position)
             }
         })
         manufacturerViewModel.manufacturers(m).observe(viewLifecycleOwner, {
@@ -193,7 +212,7 @@ class SearchMedicamentFragment : Fragment() {
                             .observe(viewLifecycleOwner, {
                                 lifecycleScope.launch {
                                     adapter.submitData(it)
-                                    binding.rv.scrollToPosition(0)
+
                                 }
                             })
                     }
@@ -201,7 +220,7 @@ class SearchMedicamentFragment : Fragment() {
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
                 }
-
+                binding.rv.scrollToPosition(0)
             }
         })
         searchViewMoedl.medicaments(requireContext(), name, m).observe(viewLifecycleOwner, {
@@ -218,11 +237,11 @@ class SearchMedicamentFragment : Fragment() {
         super.onResume()
         loadData()
         m = ""
-        if (m != "") {
-            binding.filterStatus.visibility = View.VISIBLE
-        } else {
-            binding.filterStatus.visibility = View.INVISIBLE
-        }
+//        if (m != "") {
+//            binding.filterStatus.visibility = View.VISIBLE
+//        } else {
+        binding.filterStatus.visibility = View.INVISIBLE
+//        }
         (activity as MainActivity).hideBottomBar()
     }
 

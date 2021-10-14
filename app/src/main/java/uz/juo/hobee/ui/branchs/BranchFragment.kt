@@ -99,11 +99,12 @@ class BranchFragment : Fragment() {
                     branchesViewModel.branches(name, lat, long)
                         .observe(viewLifecycleOwner, Observer {
                             lifecycleScope.launch {
-                                binding.rv.scrollToPosition(0)
+
                                 adapter.submitData(it)
                             }
                         })
                 }
+                binding.rv.scrollToPosition(0)
             }
         })
         branchesViewModel.branches(name, lat, long).observe(viewLifecycleOwner, Observer {
