@@ -121,11 +121,12 @@ class InfoBranchFragment : Fragment() {
                     viewModel.medicaments(requireContext(), name, param1!!.toInt())
                         .observe(viewLifecycleOwner, Observer {
                             lifecycleScope.launch {
-                                binding.rv.scrollToPosition(0)
+
                                 adapter.submitData(it)
                             }
                         })
                 }
+                binding.rv.scrollToPosition(0)
             }
         })
         adapter = BranchInfoAdapter(requireContext(), object : BranchInfoAdapter.setOnClick {
