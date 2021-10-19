@@ -233,8 +233,8 @@ class SearchMedicamentFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        loadData()
         m = ""
+        loadData()
 //        if (m != "") {
 //            binding.filterStatus.visibility = View.VISIBLE
 //        } else {
