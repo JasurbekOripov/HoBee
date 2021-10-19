@@ -117,9 +117,7 @@ class SearchMedicamentFragment : Fragment() {
             override fun afterTextChanged(p0: Editable?) {
                 m = p0.toString()
                 try {
-                    if (m != "") {
-                        binding.filterStatus.visibility = View.VISIBLE
-                    } else {
+                    if (m == "") {
                         manufavturerAdapter = ManufacturerAdapter(
                             requireContext(),
                             m,
@@ -140,11 +138,11 @@ class SearchMedicamentFragment : Fragment() {
                             })
                         binding.filterStatus.visibility = View.INVISIBLE
                         rv?.adapter = manufavturerAdapter
+                        loadData()
                     }
                     manufacturerViewModel.manufacturers(m).observe(viewLifecycleOwner, {
                         lifecycleScope.launch {
                             manufavturerAdapter.submitData(it)
-
                         }
                     })
                 } catch (e: Exception) {
