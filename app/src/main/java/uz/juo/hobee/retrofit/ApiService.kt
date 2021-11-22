@@ -11,7 +11,7 @@ interface ApiService {
     suspend fun getBestMedicaments(): List<Medicament>
 
     @GET("medicaments/{id}")
-    suspend fun getMedicamentById(@Path("id") id: Int): GetById
+    suspend fun getMedicamentById(@Path("id") id: Int): Response<GetById>
 
     @GET("branches/{id}")
     suspend fun getPharmacyById(@Path("id") id: Int): Item

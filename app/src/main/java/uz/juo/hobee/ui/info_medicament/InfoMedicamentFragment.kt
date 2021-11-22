@@ -1,9 +1,7 @@
 package uz.juo.hobee.ui.info_medicament
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -37,18 +35,10 @@ import uz.juo.hobee.utils.NetworkHelper
 import uz.juo.hobee.utils.SharedPreference
 import java.lang.Exception
 import android.widget.TextView
-import android.graphics.drawable.ColorDrawable
-import android.app.Dialog
-import android.content.Context
-import android.graphics.Color
-import android.net.Uri
 import android.os.Build
-import android.view.Window
 import androidx.annotation.RequiresApi
-import androidx.cardview.widget.CardView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import uz.juo.hobee.models.GetById
-import uz.juo.hobee.models.ItemXXX
 
 
 private const val ARG_PARAM1 = "param1"
@@ -72,7 +62,7 @@ class InfoMedicamentFragment : Fragment() {
         try {
             (activity as MainActivity).hideBottomBar()
             pos = SharedPreference.getInstance(requireContext()).medId.toInt()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
@@ -84,22 +74,31 @@ class InfoMedicamentFragment : Fragment() {
     ): View {
         binding = FragmentInfoMedicamentBinding.inflate(inflater, container, false)
         binding.viewPager.isUserInputEnabled = false
+        binding.back.setOnClickListener {
+            findNavController().popBackStack()
+        }
         var data = GetById()
         if (NetworkHelper(requireContext()).isNetworkConnected()) {
             try {
                 lifecycleScope.launch {
-                    data = ApiClient.apiService.getMedicamentById(pos)
-                    setData(data)
+                    var res =  ApiClient.apiService.getMedicamentById(SharedPreference.getInstance(requireContext()).medId.toInt())
+//                   ApiClient.apiService.getMedicamentById(pos)
+                    if (res.isSuccessful) {
+                        data = res.body() ?: GetById()
+                        setData(data)
+                    } else {
+                        view?.let {
+                            Snackbar.make(
+                                it,
+                                "Check internet connection or Server error",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                 }
             } catch (e: Exception) {
-//                Toast.makeText(requireContext(), "id null", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
             }
-        } else {
-            view?.let {
-                Snackbar.make(it, "No Internet connection", Snackbar.LENGTH_LONG)
-                    .show()
-            }
-        }
         binding.info.setOnClickListener {
             try {
                 openInfo(data)
@@ -163,9 +162,6 @@ class InfoMedicamentFragment : Fragment() {
                 })
             }
         }
-        binding.back.setOnClickListener {
-            findNavController().popBackStack()
-        }
         binding.tab.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 binding.viewPager.currentItem = tab?.position!!
@@ -182,7 +178,8 @@ class InfoMedicamentFragment : Fragment() {
         binding.like.setOnClickListener {
             lifecycleScope.launch {
                 try {
-                    var mediacament = ApiClient.apiService.getMedicamentById(pos)
+                    var mediacament = data
+//                        ApiClient.apiService.getMedicamentById(pos)
                     var likable = false
                     for (i in Functions().getFavorite(requireContext())) {
                         if (i.id == pos) {
@@ -225,13 +222,20 @@ class InfoMedicamentFragment : Fragment() {
         TabLayoutMediator(binding.tab, binding.viewPager) { tab, pos ->
             tab.text = loadDat()[pos]
         }.attach()
+        }
+        else {
+            view?.let {
+                Snackbar.make(it, "No Internet connection", Snackbar.LENGTH_LONG)
+                    .show()
+            }
+        }
         return binding.root
     }
 
-    private fun checkLikable() {
+    private fun checkLikable(data: GetById) {
         lifecycleScope.launch {
-            var data =
-                ApiClient.apiService.getMedicamentById(SharedPreference.getInstance(requireContext()).medId.toInt())
+//            var data =
+//                ApiClient.apiService.getMedicamentById(SharedPreference.getInstance(requireContext()).medId.toInt())
             var likable = false
             for (i in Functions().getFavorite(requireContext())) {
                 if (i.id == data.id) {
@@ -274,7 +278,7 @@ class InfoMedicamentFragment : Fragment() {
     }
 
     private fun setData(data: GetById) {
-        checkLikable()
+        checkLikable(data)
         binding.name.text = data.name
         if (data.price == null || data.price == "") {
             binding.priceFrom.text = "нет в наличии"
@@ -298,7 +302,7 @@ class InfoMedicamentFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-            (activity as MainActivity).showBottomBar()
+        (activity as MainActivity).showBottomBar()
 //        activity?.window?.statusBarColor = Color.parseColor("#1B6DDC")
     }
 
