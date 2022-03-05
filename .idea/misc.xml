@@ -16,7 +16,9 @@
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/ic_liked.xml" value="0.19212962962962962" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/ic_location.xml" value="0.2169230769230769" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/ic_location_permission.xml" value="0.2169230769230769" />
+        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/ic_pin.xml" value="0.18949771689497716" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/info.xml" value="0.19315068493150686" />
+        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/map_back_back.xml" value="0.18949771689497716" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/new_info.xml" value="0.19315068493150686" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/price_tv_back.xml" value="0.2037037037037037" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/drawable/toolbar_back.xml" value="0.2037037037037037" />
@@ -38,8 +40,8 @@
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/fragment_view_pager.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/home_nearby_rv_item.xml" value="0.5" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/info_med_bottomsheet.xml" value="0.18" />
-        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/info_medicament_item.xml" value="0.9" />
-        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/location_dialog.xml" value="0.2" />
+        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/info_medicament_item.xml" value="0.22" />
+        <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/location_dialog.xml" value="0.5" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/manufacturer_bottom_sheet.xml" value="0.5" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/manufacturer_item.xml" value="0.2" />
         <entry key="..\:/Users/7777/AndroidStudioProjects/HoBee/app/src/main/res/layout/view_pager_item.xml" value="0.20416666666666666" />

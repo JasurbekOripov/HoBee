@@ -19,6 +19,14 @@
         android:theme="@style/Theme.HoBee"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <receiver
+            android:name=".utils.NetworkChangeListener"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".ui.branchs_on_map.BranchsOnMapActivity"
             android:exported="true" />
